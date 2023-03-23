@@ -6,3 +6,9 @@ __pycache__/
 # Environments
 .venv
 .env
+
+# VSCode project settings
+.vscode
+*.code-workspace
+.code-workspace
+debug.log
