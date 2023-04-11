@@ -9,6 +9,9 @@ class DbPostgresConfig:
     db_user: str
     db_password: str
 
+    def get_url() -> str:
+        return f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}/{db_name}"
+
 
 @dataclass
 class Bot:
