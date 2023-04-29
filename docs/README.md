@@ -2,4 +2,12 @@
 
 [![Draw IO](https://github.com/jgraph/drawio/raw/a117e3d9b0e0bc71653d328d2f68126656f44d9e/src/main/webapp/favicon.ico)](to-do-activity-diagram.drawio)
 
-![Activity diagram](./to-do-activity-diagram.svg)
+![Activity diagram](to-do-activity-diagram.svg)
+
+## Postgres database schema
+
+[![pgModeler](https://pgmodeler.io/img/icon.png)](postgres-db.dbm)
+
+[SQL Script for initializing](./sql/init-postgres-db.sql)
+
+![Database schema](postgres-db.svg)

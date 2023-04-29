@@ -10,7 +10,7 @@ from db.models import Base
 
 class User(Base):
     __tablename__ = 'user'
-    
+
     id: Column = Column('id', BigInteger, primary_key=True, nullable=False, autoincrement=True)
     telegram_user_id: Column = Column('telegram_user_id', BigInteger, unique=True, nullable=False)
     username: Column = Column('username', String, nullable=False)
