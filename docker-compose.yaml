@@ -2,31 +2,30 @@ version: "3.8"
 
 services:
   redis:
+    container_name: "${REDIS_CONTAINER_NAME}"
     build:
-      context: ./docker
-      dockerfile: docker/RedisDockerfile
+      dockerfile: ./build/RedisDockerfile
     env_file:
       - ".env"
     volumes:
-      - "log/redis-server.log:/var/log/redis/redis-server.log"
+      - "./log/redis-server.log:/var/log/redis/redis-server.log"
     restart: on-failure
     ports:
       - "${REDIS_DB_PORT}:6379"
   postgres:
+    container_name: "${POSTGRES_CONTAINER_NAME}"
     image: postgres:latest
     env_file:
       - ".env"
     volumes:
-      - "data/postgres:/var/lib/postgresql/data"
+      - "./data/postgres:/var/lib/postgresql/data"
     restart: on-failure
     ports:
       - "${POSTGRES_DB_PORT}:5432"
   bot:
-    image: "${BOT_IMAGE_NAME}"
     container_name: "${BOT_CONTAINER_NAME}"
     build:
-      context: ./docker
-      dockerfile: docker/Dockerfile
+      dockerfile: ./build/Dockerfile
     working_dir: "/usr/src/app/${BOT_NAME}"
     command: python3 -m bot
     restart: always

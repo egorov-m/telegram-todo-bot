@@ -15,3 +15,6 @@ __pycache__/
 *.code-workspace
 .code-workspace
 debug.log
+
+log/
+data/
