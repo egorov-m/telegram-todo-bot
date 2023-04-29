@@ -5,7 +5,7 @@ from sqlalchemy import (
     Date
 ) 
 
-from models import Base
+from db.models import Base
 
 
 class User(Base):

@@ -3,15 +3,15 @@ import logging
 
 from aiogram import Bot, Dispatcher
 
-from config.config import Config, load_config
+from src.config import Config, load_config
 from keyboards import set_main_menu
 from handlers import user_handlers, other_handlers, callback
 import lexicon as lx
-import models
-import repository as repo
+from db import models, repository as repo
 
 logger = logging.getLogger(__name__)
 lexicon: lx.LEXICON = lx.LEXICON_EN()
+
 
 async def main() -> None:
     """Bot configuration and launch function
@@ -40,7 +40,7 @@ async def main() -> None:
     dp.include_router(callback.router)
 
     await bot.delete_webhook(drop_pending_updates=True)
-    await dp.start_polling(bot)
+    await dp.start_polling(bot, sessionmaker=sessionmaker)
 
 if __name__ == '__main__':
     try:

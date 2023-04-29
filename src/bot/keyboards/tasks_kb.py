@@ -3,15 +3,14 @@ from typing import List
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from models.task import Task
+from src.db.models.task import Task
 import lexicon as lx
 
 
 def create_delete_tasks_keyboard(tasks: List[Task], isInProcess: bool = False) -> InlineKeyboardMarkup:
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
-    kb_builder.row([InlineKeyboardButton(text=task.title,
-                                         callback_data='delete_task_' + task.id)
+    kb_builder.row([InlineKeyboardButton(text=task.title, callback_data='delete_task_' + task.id)
                     for task in tasks])
     lexicon: lx.LEXICON = lx.LEXICON_EN()
     kb_builder.row(InlineKeyboardButton(text=lexicon.delete_all_button.text,

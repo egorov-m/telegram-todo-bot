@@ -3,6 +3,7 @@ name = "telegram-todo-bot"
 version = "0.1.0"
 description = ""
 authors = ["Egorov Mikhail"]
+license = "Apache License 2.0"
 readme = "README.md"
 packages = [{include = "telegram_todo_bot"}]
 

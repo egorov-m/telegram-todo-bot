@@ -2,14 +2,15 @@ from dataclasses import dataclass
 from typing import List
 
 from lexicon.lexicon import LEXICON, button
-from models.task import Task
+from bot.handlers.callback_factories import AddTaskCallback
+from db.models.task import Task
 
 
 @dataclass()
 class LEXICON_EN(LEXICON):
     commands = {'/start': 'Welcome! Start using the fast to-do list.',
                 '/help': 'A help message about the bot\'s capabilities.'}
-    main_buttons = {'Add Task ➕': 'btn_add_task',
+    main_buttons = {'Add Task ➕': AddTaskCallback(), #'btn_add_task',
                     'Delete Task ❌': 'btn_delete_task',
                     'Done ✅ | not done 📌': 'btn_done_not_done',
                     'Edit Task ✏️': 'btn_edit_task',

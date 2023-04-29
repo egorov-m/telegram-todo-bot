@@ -7,9 +7,10 @@ from sqlalchemy import (
 )
 
 from dataclasses import dataclass
-from models import Base
+from src.db.models import Base
 
 
+@dataclass
 class Task(Base):
     __tablename__ = 'task'
 

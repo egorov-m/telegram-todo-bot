@@ -4,6 +4,6 @@ ENV BOT_NAME = $BOT_NAME
 RUN mkdir /usr/src/app/"${BOT_NAME}"
 WORKDIR /usr/src/app/"${BOT_NAME}"
 
-COPY ./bot /usr/src/app/"${BOT_NAME}"
+COPY ./src /usr/src/app/"${BOT_NAME}"
 COPY ./requirements.txt /usr/src/app/"${BOT_NAME}"
 RUN pip install -r /usr/src/app/"${BOT_NAME:}"/requirements.txt
