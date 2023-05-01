@@ -1,36 +1,32 @@
+""" This file represent startup bot logic"""
+
 import asyncio
-import logging
+import logging as log
 
 from aiogram import Bot, Dispatcher
 
-from src.config import Config, load_config
+from config import Config, load_config
+from logconfig import setup_logging
 from keyboards import set_main_menu
 from handlers import user_handlers, other_handlers, callback
+from db.database import create_async_engine
+from db.database import get_session_maker
 import lexicon as lx
-from db import models, repository as repo
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger('bot_logger')
 lexicon: lx.LEXICON = lx.LEXICON_EN()
 
 
 async def main() -> None:
     """Bot configuration and launch function
     """
-
-    logging.basicConfig(
-        level=logging.INFO,
-        format=u'%(filename)s:%(lineno)d #%(levelname)-8s '
-               u'[%(asctime)s] - %(name)s - %(message)s')
-
+    config: Config = load_config()
+    bot: Bot = Bot(token=config.bot.token, parse_mode='HTML')
     logger.info('Starting bot')
 
-    config: Config = load_config()
+    async_engine = create_async_engine(url=config.dbPostgres.get_url)
+    sessionmaker = get_session_maker(async_engine)
 
-    async_engine = repo.create_async_engine(config.dbPostgres.get_url(), True)
-    sessionmaker = repo.get_session_maker(async_engine)
-    await repo.proceed_schemas(async_engine, models.Base.metadata)
-
-    bot: Bot = Bot(token=config.bot.token, parse_mode='HTML')
     dp: Dispatcher = Dispatcher(bot=bot)
 
     await set_main_menu(bot, lexicon)
@@ -42,8 +38,11 @@ async def main() -> None:
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot, sessionmaker=sessionmaker)
 
+
 if __name__ == '__main__':
     try:
+        setup_logging()
+
         asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):
         logger.error('Bot stopped!')
