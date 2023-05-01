@@ -1,25 +1,38 @@
-from sqlalchemy import (
-    Column,
-    BigInteger,
-    String,
-    Boolean,
-    ForeignKey
+from sqlalchemy.dialects.postgresql import (
+    UUID,
+    BIGINT,
+    VARCHAR,
+    BOOLEAN,
+    DATE,
+    TIMESTAMP
 )
+from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import ForeignKey
+from .base import Base
 
-from dataclasses import dataclass
-from src.db.models import Base
 
-
-@dataclass
 class Task(Base):
-    __tablename__ = 'task'
+    """
+    Task model
+    """
 
-    id: Column = Column('id', BigInteger, primary_key=True, unique=True, nullable=False, autoincrement=True)
-    title: Column = Column('title', String, nullable=False)
-    description: Column = Column('description', String, nullable=True)
-    isDone: Column = Column('isDone', Boolean, nullable=False)
-
-    id_user: Column = Column('id_user', BigInteger, ForeignKey(column="user.id"), nullable=False)
+    id:                   Mapped[int] = mapped_column(UUID, primary_key=True, nullable=False, autoincrement=True)
+    title:                Mapped[str] = mapped_column(VARCHAR(64), unique=False, nullable=False)
+    description:          Mapped[str] = mapped_column(VARCHAR(256), unique=False, nullable=True)
+    reg_telegram_user_id: Mapped[int] = mapped_column(BIGINT, unique=False, nullable=False)
+    reg_date:             Mapped[DATE] = mapped_column(DATE, nullable=False)
+    reg_time:             Mapped[TIMESTAMP] = mapped_column(TIMESTAMP, nullable=False)
+    isDone:               Mapped[bool] = mapped_column(BOOLEAN, unique=False, nullable=False)
+    isExist:              Mapped[bool] = mapped_column(BOOLEAN, unique=False, nullable=False)
+    id_user:              Mapped[UUID] = mapped_column(ForeignKey("user.id"), unique=False, nullable=False)
 
     def __repr__(self) -> str:
-        return f"Task(id={self.id!r}, title={self.title!r}, description={self.description!r}, isDone={self.isDone!r}, idUser={self.id_user!r})"
+        return f"Task(id={self.id!r}," \
+               f"title={self.title!r}," \
+               f"description={self.description!r}," \
+               f"reg_telegram_user_id={self.reg_telegram_user_id!r}," \
+               f"reg_date={self.reg_date!r}," \
+               f"reg_time={self.reg_time!r}," \
+               f"isDone={self.isDone!r}," \
+               f"isExist={self.isExist!r}," \
+               f"idUser={self.id_user!r})"
