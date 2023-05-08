@@ -1,3 +1,11 @@
-from .lexicon import LEXICON
-from .lexicon_en import LEXICON_EN
-from .lexicon_ru import LEXICON_RU
+from .translator import (
+    load_localizations,
+    Translator,
+    translate_list_all
+)
+
+__all__ = [
+    'load_localizations',
+    'Translator',
+    'translate_list_all'
+]

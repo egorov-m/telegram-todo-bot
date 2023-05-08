@@ -1,4 +1,4 @@
-# Commands
+# Commands for menu
 cmd_start_title = /start
 cmd_start_description = Welcome! Start using the fast to-do list.
 
@@ -18,4 +18,4 @@ btn_cancel_title = Cancel ◀️
 
 # Messages
 task_list_title = You don't have tasks yet.
-error_message = Such a message can\'t be processed, use the menu.
+error_message = Such a message can't be processed, use the menu.

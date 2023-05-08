@@ -1,4 +1,4 @@
-# Commands
+# Commands for menu
 cmd_start_title = /старт
 cmd_start_description = Добро пожаловать! Начните использовать список быстрых дел.
 
