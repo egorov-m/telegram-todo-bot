@@ -1,3 +1,4 @@
+from enum import StrEnum
 from typing import Dict
 
 from aiogram.filters.callback_data import CallbackData
@@ -12,22 +13,23 @@ from src.bot.keyboards.callback_factories import (
     UpdateListCallback,
     SettingsCallback
 )
+from src.bot.structures.data_structure import BotBtnTitle
 from src.lexicon.translator import Translator
 
 
-buttons_data: Dict[str, CallbackData] = {
-    'btn_add_task_title': AddTaskCallback(),
-    'btn_delete_task_title': DeleteTaskCallback(),
-    'btn_done_task_title': DoneTaskCallback(),
-    'btn_edit_task_title': EditTaskCallback(),
-    'btn_update_list_title': UpdateListCallback(),
-    'btn_settings_title': SettingsCallback()
+_buttons_data: Dict[StrEnum, CallbackData] = {
+    BotBtnTitle.ADD_TASK: AddTaskCallback(),
+    BotBtnTitle.DELETE_TASK: DeleteTaskCallback(),
+    BotBtnTitle.DONE_TASK: DoneTaskCallback(),
+    BotBtnTitle.EDIT_TASK: EditTaskCallback(),
+    BotBtnTitle.UPDATE_LIST: UpdateListCallback(),
+    BotBtnTitle.SETTINGS: SettingsCallback()
 }
 
 
 async def create_start_keyboard(translator: Translator) -> InlineKeyboardMarkup:
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
-    kb_builder.row(*[InlineKeyboardButton(text=await translator.translate('btn_start_title'),
+    kb_builder.row(*[InlineKeyboardButton(text=await translator.translate(BotBtnTitle.START),
                                           callback_data=MainCallback().pack())], width=2)
 
     return kb_builder.as_markup()
@@ -36,6 +38,6 @@ async def create_start_keyboard(translator: Translator) -> InlineKeyboardMarkup:
 async def create_main_keyboard(translator: Translator) -> InlineKeyboardMarkup:
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
     kb_builder.row(*[InlineKeyboardButton(text=await translator.translate(key),
-                                          callback_data=value.pack()) for key, value in buttons_data.items()], width=2)
+                                          callback_data=value.pack()) for key, value in _buttons_data.items()], width=2)
 
     return kb_builder.as_markup()

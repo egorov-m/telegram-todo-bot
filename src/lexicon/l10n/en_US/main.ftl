@@ -26,4 +26,5 @@ btn_language_ru_RU_title = Russian 🇷🇺
 task_list_title = TODO LIST 📝
 task_list_empty_message = You don't have tasks yet.
 settings_title = Bot settings ⚙️
+settings_languages_title = Select the language for the bot from the available.
 error_message = Such a message can't be processed, use the menu.
