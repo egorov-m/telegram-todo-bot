@@ -32,7 +32,7 @@ class UserRepo(Repository[User]):
                   ) -> User:
         """
         Insert a new user into the database
-        :param current_language The current language of the bot user interface
+        :param current_language The current lexicon of the bot user interface
         :param reg_date Date of user registration
         :param reg_time Time of user registration
         :param upd_date The date the user was last updated

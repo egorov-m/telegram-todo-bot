@@ -14,6 +14,24 @@ class TransferData(TypedDict):
     translator: Translator
 
 
+class BotItem(StrEnum):
+    MAIN = 'main'
+    ADD_TASK = 'add_task'
+    DELETE_TASK = 'delete_task'
+    DONE_TASK = 'done_task'
+    EDIT_TASK = 'edit_task'
+    UPDATE_LIST = 'update_list'
+    SETTINGS = 'settings'
+    SETTINGS_LANGUAGES = 'settings_languages'
+    BACK = 'back'
+    LANGUAGE = 'language'
+
+
+class BotLanguage(StrEnum):
+    EN_US = 'en_US'
+    RU_RU = 'ru_RU'
+
+
 class BotBtnLanguageTitle(StrEnum):
     EN_US = 'btn_language_en_US_title'
     RU_RU = 'btn_language_ru_RU_title'
@@ -34,19 +52,17 @@ class BotBtnTitle(StrEnum):
     BACK = 'btn_back_title'
 
 
-class BotLanguage(StrEnum):
-    EN_US = 'en_US'
-    RU_RU = 'ru_RU'
+class BotMessage(StrEnum):
+    TASK_LIST_TITLE = 'task_list_title'
+    TASK_LIST_EMPTY_MESSAGE = 'task_list_empty_message'
 
+    ADD_TASK_MESSAGE = 'add_task_message'
+    ADD_TASK_ENTER_TITLE = 'add_task_enter_title'
+    ADD_TASK_ENTER_DESCRIPTION = 'add_task_enter_description'
+    ADD_TASK_CONFIRM = 'add_task_confirm'
 
-class BotItem(StrEnum):
-    MAIN = 'main'
-    ADD_TASK = 'add_task'
-    DELETE_TASK = 'delete_task'
-    DONE_TASK = 'done_task'
-    EDIT_TASK = 'edit_task'
-    UPDATE_LIST = 'update_list'
-    SETTINGS = 'settings'
-    SETTINGS_LANGUAGES = 'settings_languages'
-    BACK = 'back'
-    LANGUAGE = 'language'
+    INPUT_ERROR_MESSAGE = 'input_error_message'
+
+    SETTINGS_TITLE = 'settings_title'
+    SETTINGS_LANGUAGES_TITLE = 'settings_languages_title'
+    ERROR_MESSAGE = 'error_message'

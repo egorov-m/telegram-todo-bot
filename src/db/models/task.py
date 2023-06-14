@@ -16,7 +16,7 @@ class Task(Base):
     Task model
     """
 
-    id:                   Mapped[int] = mapped_column(UUID, primary_key=True, nullable=False, autoincrement=True)
+    id:                   Mapped[UUID] = mapped_column(UUID, primary_key=True, nullable=False, autoincrement=True)
     title:                Mapped[str] = mapped_column(VARCHAR(64), unique=False, nullable=False)
     description:          Mapped[str] = mapped_column(VARCHAR(256), unique=False, nullable=True)
     reg_telegram_user_id: Mapped[int] = mapped_column(BIGINT, unique=False, nullable=False)

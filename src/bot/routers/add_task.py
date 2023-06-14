@@ -1,5 +1,3 @@
-from enum import StrEnum
-
 from aiogram import Router, types
 from aiogram.types import Message, InlineKeyboardMarkup
 from aiogram.filters.callback_data import CallbackQuery
@@ -8,6 +6,7 @@ from aiogram.fsm.context import FSMContext
 
 from bot.keyboards.main_kb import create_back_keyboard
 from bot.routers.start import start
+from bot.states.data import AddTaskStateData
 from bot.utils.html.message_template import bold_text, italic_text
 from src.bot.keyboards.callback_factories import AddTaskCallback
 from src.bot.structures.data_structure import BotMessage
@@ -19,6 +18,9 @@ add_task_router = Router(name='add_task_router')
 
 @add_task_router.callback_query(AddTaskCallback.filter(), default_state)
 async def btn_add_task(callback: CallbackQuery, state: FSMContext, translator: Translator):
+    """
+    Handler for pressing the add task button
+    """
     await state.set_state(state=AddTaskStates.add_task_waiting_title_input)
     subtitle: str = await _get_add_task_subtitle(translator, AddTaskStates.add_task_waiting_title_input)
     msg: str = await _get_add_task_msg(translator, subtitle)
@@ -29,6 +31,9 @@ async def btn_add_task(callback: CallbackQuery, state: FSMContext, translator: T
 
 
 async def _get_add_task_msg(translator: Translator, subtitle: str, input_error: bool = False, **kwargs) -> str:
+    """
+    Getting a message displayed when adding a task
+    """
     title: str = await translator.translate(BotMessage.ADD_TASK_MESSAGE, kwargs)
     error: str = ""
     if input_error:
@@ -37,6 +42,10 @@ async def _get_add_task_msg(translator: Translator, subtitle: str, input_error: 
 
 
 async def _get_add_task_subtitle(translator: Translator, state: State) -> str:
+    """
+    Get a subtitle for messages in the process of adding tasks
+    subtitle example: Enter the description of the new task:
+    """
     msg: BotMessage | None = None
     match state:
         case AddTaskStates.add_task_waiting_title_input:
@@ -54,6 +63,9 @@ async def _get_add_task_subtitle(translator: Translator, state: State) -> str:
 
 @add_task_router.message(AddTaskStates.add_task_waiting_title_input)
 async def input_title_add_task(message: types.Message, state: FSMContext, translator: Translator):
+    """
+    Task title input handler in the process of adding
+    """
     if _is_no_valid_input(message.text):
         await _invalid_input(state, translator)
     else:
@@ -70,6 +82,9 @@ async def input_title_add_task(message: types.Message, state: FSMContext, transl
 
 @add_task_router.message(AddTaskStates.add_task_waiting_description_input)
 async def input_description_aad_task(message: types.Message, state: FSMContext, translator: Translator):
+    """
+    Task description input handler in the process of adding
+    """
     if _is_no_valid_input(message.text):
         await _invalid_input(state, translator)
     else:
@@ -88,6 +103,9 @@ async def input_description_aad_task(message: types.Message, state: FSMContext, 
 
 
 async def _invalid_input(state: FSMContext, translator: Translator) -> bool:
+    """
+    Editing the message in case of incorrect data entry by the user
+    """
     data = await state.get_data()
     add_task_message: Message = data[AddTaskStateData.ADD_TASK_MESSAGE]
     st = await state.get_state()
@@ -106,6 +124,9 @@ async def _edit_message(message: types.Message,
                         text: str,
                         kb: InlineKeyboardMarkup,
                         translator: Translator):
+    """
+    Editing a message (an error handler has been added in case of incorrect messages)
+    """
     try:
         await message.edit_text(text=text,
                                 reply_markup=kb)
@@ -116,14 +137,11 @@ async def _edit_message(message: types.Message,
 
 
 def _is_no_valid_input(text: str | None):
+    """
+    Whether text input from a user is invalid
+    """
     return (text is None or
             text.isspace() or
             text == '' or
             text.__contains__("\"") or
             text.__contains__("\'"))
-
-
-class AddTaskStateData(StrEnum):
-    TASK_TITLE = "task_title"
-    TASK_DESCRIPTION = "task_description"
-    ADD_TASK_MESSAGE = "add_task_message"

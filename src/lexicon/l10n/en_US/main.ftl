@@ -17,6 +17,7 @@ btn_delete_all_title = Delete All ❌
 btn_save_title = Save ✅
 btn_cancel_title = Cancel ◀️
 btn_back_title = Back ◀️
+btn_skip_title = Skip ⤵️
 
 btn_languages_title = Languages 🌐
 btn_language_en_US_title = English 🇺🇸
@@ -25,6 +26,16 @@ btn_language_ru_RU_title = Russian 🇷🇺
 # Messages
 task_list_title = TODO LIST 📝
 task_list_empty_message = You don't have tasks yet.
+
+add_task_message = Adding a new task 🆕
+                   Title: { $title }
+                   Description: { $description }
+add_task_enter_title = Enter the title of the new task:
+add_task_enter_description = Enter the description of the new task:
+add_task_confirm = Save a new task?
+
+input_error_message = The data entered is not correct!
+
 settings_title = Bot settings ⚙️
 settings_languages_title = Select the language for the bot from the available.
 error_message = Such a message can't be processed, use the menu.

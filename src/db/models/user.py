@@ -15,7 +15,7 @@ class User(Base):
     User model
     """
 
-    id:               Mapped[int] = mapped_column(UUID, primary_key=True, nullable=False, autoincrement=True)
+    id:               Mapped[UUID] = mapped_column(UUID, primary_key=True, nullable=False, autoincrement=True)
     current_language: Mapped[str] = mapped_column(VARCHAR(4), unique=False, nullable=False)
     username:         Mapped[str] = mapped_column(VARCHAR(64), unique=False, nullable=True)
     email:            Mapped[str] = mapped_column(VARCHAR(64), unique=True, nullable=True)

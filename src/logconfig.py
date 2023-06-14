@@ -4,18 +4,18 @@ import logging.config
 
 
 def setup_logging(
-        default_path='logging.json',
+        default_path='./src/logging.json',
         default_level=logging.INFO,
-        env_key='LOG_CFG'
+        LOG_CFG='LOG_CFG'
 ):
     """
     Setup logging configuration
     """
 
     path = default_path
-    value = os.getenv(env_key, None)
-    if value:
-        path = value
+    log_config = os.getenv(LOG_CFG, None)
+    if log_config:
+        path = log_config
     if os.path.exists(path):
         with open(path, 'rt') as f:
             config = json.load(f)

@@ -23,5 +23,9 @@ def task_list(tasks: List[Task], title: str | None = None, empty_msg: str | None
     return message
 
 
-def bold_title(title: str):
-    return f'<b>{title}</b>'
+def bold_text(text: str):
+    return f'<b>{text}</b>'
+
+
+def italic_text(text: str):
+    return f'<i>{text}</i>'
