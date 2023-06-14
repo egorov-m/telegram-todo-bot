@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+ Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="1.0.1" use-changelog="false" last-position="0,0" last-zoom="0.8" max-obj-count="4"
+	 default-schema="public" default-owner="postgres"
+	 layers="Default layer"
+	 active-layers="0"
+	 layer-name-colors="#000000"
+	 layer-rect-colors="#b4b4b4"
+	 show-layer-names="false" show-layer-rects="false">
+<tablespace name="telegram_bot" directory="'/var/lib/postgresql/data/telegram-bot'">
+	<role name="postgres"/>
+</tablespace>
+
+<database name="my_database" is-template="false" allow-conns="true">
+</database>
+
+<schema name="public" layers="0" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<schema name="your_fast_toto_bot" layers="0" rect-visible="true" fill-color="#e1e1e1">
+	<role name="postgres"/>
+</schema>
+
+<table name="user" layers="0" collapse-mode="2" max-obj-count="10" z-value="0">
+	<schema name="your_fast_toto_bot"/>
+	<role name="postgres"/>
+	<tablespace name="telegram_bot"/>
+	<position x="1065" y="102.5"/>
+	<column name="id" not-null="true" default-value="uuid_generate_v4()">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="current_language" not-null="true">
+		<type name="varchar" length="4"/>
+	</column>
+	<column name="username">
+		<type name="varchar" length="64"/>
+	</column>
+	<column name="email">
+		<type name="varchar" length="64"/>
+	</column>
+	<column name="phone">
+		<type name="varchar" length="20"/>
+	</column>
+	<column name="reg_date" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="reg_time" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_date" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="upd_time" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="user_pk" type="pk-constr" table="your_fast_toto_bot.&quot;user&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="task" layers="0" collapse-mode="2" max-obj-count="10" z-value="0">
+	<schema name="your_fast_toto_bot"/>
+	<role name="postgres"/>
+	<tablespace name="telegram_bot"/>
+	<position x="337.5" y="292.5"/>
+	<column name="id" not-null="true" default-value="uuid_generate_v4()">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="title" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<column name="description">
+		<type name="varchar" length="256"/>
+	</column>
+	<column name="reg_telegram_user_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="reg_date" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="reg_time" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_done" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="is_exist" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<constraint name="task_pk" type="pk-constr" table="your_fast_toto_bot.task">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_user" index="8"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="user_fk" index="1"/>
+	</customidxs>
+</table>
+
+<relationship name="user_has_many_task" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#12db24"
+	 src-table="your_fast_toto_bot.&quot;user&quot;"
+	 dst-table="your_fast_toto_bot.task"
+	 src-required="false" dst-required="false"/>
+
+<table name="telegram_user" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="your_fast_toto_bot"/>
+	<role name="postgres"/>
+	<position x="673.75" y="75"/>
+	<column name="telegram_user_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="id_user" not-null="true">
+		<type name="uuid" length="0"/>
+	</column>
+</table>
+
+</dbmodel>

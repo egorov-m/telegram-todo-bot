@@ -3,15 +3,23 @@ name = "telegram-todo-bot"
 version = "0.1.0"
 description = ""
 authors = ["Egorov Mikhail"]
+license = "Apache License 2.0"
 readme = "README.md"
 packages = [{include = "telegram_todo_bot"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-aiogram = "^2.25.1"
 python-dotenv = "^1.0.0"
 setuptools = "^67.6.0"
+environs = "^9.5.0"
+aiogram = {version = "^3.0.0b7", allow-prereleases = true}
+sqlalchemy = "^2.0.9"
+redis = "^4.5.4"
+fluent-runtime = "^0.4.0"
 
+
+[tool.poetry.group.dev.dependencies]
+autopep8 = "^2.0.2"
 
 [build-system]
 requires = ["poetry-core"]
