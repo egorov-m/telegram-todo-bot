@@ -1,4 +1,4 @@
-from src.bot.structures.data_structure import BotItem, BotItem
+from src.bot.structures.data_structure import BotItem
 
 from aiogram.filters.callback_data import CallbackData
 
@@ -9,6 +9,12 @@ class MainCallback(CallbackData, prefix=BotItem.MAIN):
 
 class AddTaskCallback(CallbackData, prefix=BotItem.ADD_TASK):
     pass
+
+
+class AddTaskSaveCallback(CallbackData, prefix=BotItem.ADD_TASK_SAVE):
+    # !!! Important: The field names must match the AddTaskStateData fields
+    task_title: str = "title"
+    task_description: str = "description"
 
 
 class DeleteTaskCallback(CallbackData, prefix=BotItem.DELETE_TASK):
@@ -33,6 +39,10 @@ class SettingsCallback(CallbackData, prefix=BotItem.SETTINGS):
 
 class BackCallback(CallbackData, prefix=BotItem.BACK):
     where_from: str = BotItem.MAIN
+
+
+class CancelCallback(CallbackData, prefix=BotItem.CANCEL):
+    pass
 
 
 class LanguagesCallback(CallbackData, prefix=BotItem.SETTINGS_LANGUAGES):

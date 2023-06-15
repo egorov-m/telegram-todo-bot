@@ -1,5 +1,6 @@
 from aiogram import Router, types
 from aiogram.filters import Command, StateFilter
+from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
 from aiogram.types import CallbackQuery, Message
 
@@ -25,7 +26,9 @@ async def cmd_start(message: types.Message, translator: Translator):
 
 
 @start_router.callback_query(MainCallback.filter())
-async def btn_start(callback: CallbackQuery, translator: Translator):
+async def btn_start(callback: CallbackQuery, state: FSMContext, translator: Translator):
+    await state.clear()
+    await state.set_state(default_state)
     await start(translator, callback.message)
 
 

@@ -40,10 +40,10 @@ async def create_start_keyboard(translator: Translator) -> InlineKeyboardMarkup:
     return kb_builder.as_markup()
 
 
-async def create_back_keyboard(translator: Translator) -> InlineKeyboardMarkup:
+async def create_back_keyboard(translator: Translator, where_from: BotItem = BotItem.MAIN) -> InlineKeyboardMarkup:
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
     kb_builder.row(InlineKeyboardButton(text=await translator.translate(BotBtnTitle.BACK),
-                                        callback_data=BackCallback(where_from=BotItem.MAIN).pack()), width=2)
+                                        callback_data=BackCallback(where_from=where_from).pack()), width=2)
 
     return kb_builder.as_markup()
 

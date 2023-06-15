@@ -17,6 +17,7 @@ class TransferData(TypedDict):
 class BotItem(StrEnum):
     MAIN = 'main'
     ADD_TASK = 'add_task'
+    ADD_TASK_SAVE = 'add_task_save'
     DELETE_TASK = 'delete_task'
     DONE_TASK = 'done_task'
     EDIT_TASK = 'edit_task'
@@ -24,6 +25,7 @@ class BotItem(StrEnum):
     SETTINGS = 'settings'
     SETTINGS_LANGUAGES = 'settings_languages'
     BACK = 'back'
+    CANCEL = 'cancel'
     LANGUAGE = 'language'
 
 
