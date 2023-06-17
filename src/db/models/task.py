@@ -1,13 +1,9 @@
-from sqlalchemy.dialects.postgresql import (
-    UUID,
-    BIGINT,
-    VARCHAR,
-    BOOLEAN,
-    DATE,
-    TIMESTAMP
-)
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import ForeignKey
+from datetime import datetime
+from uuid import UUID, uuid4
+
+import sqlalchemy as sa
+import sqlalchemy.dialects.postgresql as pg
+from sqlmodel import Field
 from .base import Base
 
 
@@ -16,15 +12,26 @@ class Task(Base):
     Task model
     """
 
-    id:                   Mapped[UUID] = mapped_column(UUID, primary_key=True, nullable=False, autoincrement=True)
-    title:                Mapped[str] = mapped_column(VARCHAR(64), unique=False, nullable=False)
-    description:          Mapped[str] = mapped_column(VARCHAR(256), unique=False, nullable=True)
-    reg_telegram_user_id: Mapped[int] = mapped_column(BIGINT, unique=False, nullable=False)
-    reg_date:             Mapped[DATE] = mapped_column(DATE, nullable=False)
-    reg_time:             Mapped[TIMESTAMP] = mapped_column(TIMESTAMP, nullable=False)
-    isDone:               Mapped[bool] = mapped_column(BOOLEAN, unique=False, nullable=False)
-    isExist:              Mapped[bool] = mapped_column(BOOLEAN, unique=False, nullable=False)
-    id_user:              Mapped[UUID] = mapped_column(ForeignKey("user.id"), unique=False, nullable=False)
+    id: UUID = Field(
+        sa_column=sa.Column(
+            pg.UUID(as_uuid=True), primary_key=True, default=uuid4, server_default=sa.text("gen_random_uuid()")
+        )
+    )
+    title: str = Field(nullable=False, max_length=64)
+    description: str = Field(nullable=False, max_length=256)
+    reg_telegram_user_id: int = Field(sa_column=sa.Column(sa.BigInteger, nullable=False))
+    reg_datetime: datetime = Field(
+        sa_column=sa.Column(
+            sa.DateTime(timezone=True), nullable=False, server_default=sa.func.current_timestamp()
+        )
+    )
+    isDone: bool = Field(
+        sa_column=sa.Column(sa.Boolean, default=False, server_default=sa.false(), nullable=False)
+    )
+    isExist: bool = Field(
+        sa_column=sa.Column(sa.Boolean, default=False, server_default=sa.false(), nullable=False)
+    )
+    id_user: UUID = Field(nullable=False, foreign_key="user.id")
 
     def __repr__(self) -> str:
         return f"Task(id={self.id!r}," \
