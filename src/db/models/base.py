@@ -1,9 +1,10 @@
 """ Base model file """
 
-from sqlalchemy.orm import DeclarativeBase, declared_attr
+from sqlalchemy.orm import declared_attr
+from sqlmodel import SQLModel
 
 
-class Base(DeclarativeBase):
+class Base(SQLModel):
     """Abstract model with declarative base functionality"""
 
     @classmethod

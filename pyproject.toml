@@ -16,6 +16,7 @@ aiogram = {version = "^3.0.0b7", allow-prereleases = true}
 redis = "^4.5.4"
 fluent-runtime = "^0.4.0"
 sqlmodel = "^0.0.8"
+asyncpg = "^0.27.0"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -1,58 +1,41 @@
-""" Task repository file """
-
-from typing import Optional
+from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.dialects.postgresql import UUID, DATE, TIMESTAMP, BIGINT
+from sqlmodel import select
 
-from ..models import Task
-from .abstract import Repository
+from db.models import Task, Telegram_User, User
 
 
-class TaskRepo(Repository[Task]):
-    """
-    Task repository for CRUD and other SQL queries
-    """
+class TaskRepository:
+    session: AsyncSession
 
     def __init__(self, session: AsyncSession):
-        """
-        Initialize task repository
-        """
-        super().__init__(type_model=Task, session=session)
+        self.session = session
 
-    async def new(self,
-                  title: Optional[str],
-                  reg_telegram_user_id: Optional[BIGINT],
-                  reg_date: Optional[DATE],
-                  reg_time: Optional[TIMESTAMP],
-                  id_user: Optional[UUID],
-                  isDone: Optional[bool] = False,
-                  isExist: Optional[bool] = True,
-                  description: Optional[str] = None
-                  ) -> Task:
-        """
-        Insert a new task for user into the database
-        :param title Title for a new task
-        :param reg_telegram_user_id The id of the telegram user registering the task
-        :param reg_date Date of task registration
-        :param reg_time Time of task registration
-        :param id_user The id of the user registering the task
-        :param isDone Is the task marked as down
-        :param isExist Whether there is a task for the user (has not been deleted)
-        :param description Description of the tasks
-        """
+    async def add_task(self, title: str, description: str, telegram_user: Telegram_User):
+        task: Task = Task(title=title,
+                          description=description,
+                          reg_telegram_user_id=telegram_user.telegram_user_id,
+                          id_user=telegram_user.id_user)
+        self.session.add(task)
+        await self.session.commit()
 
-        new_task = await self.session.merge(
-            Task(
-                title=title,
-                reg_telegram_user_id=reg_telegram_user_id,
-                reg_date=reg_date,
-                reg_time=reg_time,
-                id_user=id_user,
-                isDone=isDone,
-                isExist=isExist,
-                description=description
-            )
-        )
+    async def get_task(self, task_id: UUID) -> Task:
+        return await self.session.execute(select(Task).where(Task.id == task_id))
 
-        return new_task
+    async def get_tasks_for_user(self, user: User) -> list[Task]:
+        return await self.session.execute(select(Task).where(Task.id_user == user.id))
+
+    async def get_tasks_for_telegram_user(self, user: Telegram_User) -> list[Task]:
+        return await self.session.execute(select(Task).where(Task.reg_telegram_user_id == user.telegram_user_id))
+
+    async def get_all_tasks(self) -> list[Task]:
+        return await self.session.execute(select(Task))
+
+    async def update_task(self, task_id: UUID, **kwargs: [str, any]):
+        task: Task = self.get_task(task_id)
+        task.title = kwargs["title"]
+        task.description = kwargs["description"]
+        task.is_done = kwargs["is_done"]
+        task.is_exist = kwargs["is_exist"]
+        await self.session.commit()

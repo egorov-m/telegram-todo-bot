@@ -7,11 +7,10 @@ from sqlmodel import Field
 from .base import Base
 
 
-class Task(Base):
+class Task(Base, table=True):
     """
     Task model
     """
-
     id: UUID = Field(
         sa_column=sa.Column(
             pg.UUID(as_uuid=True), primary_key=True, default=uuid4, server_default=sa.text("gen_random_uuid()")
@@ -25,10 +24,10 @@ class Task(Base):
             sa.DateTime(timezone=True), nullable=False, server_default=sa.func.current_timestamp()
         )
     )
-    isDone: bool = Field(
+    is_done: bool = Field(
         sa_column=sa.Column(sa.Boolean, default=False, server_default=sa.false(), nullable=False)
     )
-    isExist: bool = Field(
+    is_exist: bool = Field(
         sa_column=sa.Column(sa.Boolean, default=False, server_default=sa.false(), nullable=False)
     )
     id_user: UUID = Field(nullable=False, foreign_key="user.id")
@@ -38,8 +37,7 @@ class Task(Base):
                f"title={self.title!r}," \
                f"description={self.description!r}," \
                f"reg_telegram_user_id={self.reg_telegram_user_id!r}," \
-               f"reg_date={self.reg_date!r}," \
-               f"reg_time={self.reg_time!r}," \
-               f"isDone={self.isDone!r}," \
-               f"isExist={self.isExist!r}," \
+               f"reg_datetime={self.reg_datetime!r}," \
+               f"isDone={self.is_done!r}," \
+               f"isExist={self.is_exist!r}," \
                f"idUser={self.id_user!r})"

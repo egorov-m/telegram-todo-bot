@@ -1,6 +1,8 @@
-from .abstract import Repository
-from .user import UserRepo
-from .task import TaskRepo
-from .telegram_user import TelegramUserRepo
+# from .abstract import Repository
+from .user import UserRepository
+from .task import TaskRepository
 
-__all__ = ("UserRepo", "TaskRepo", "TelegramUserRepo")
+__all__ = [
+    "UserRepository",
+    "TaskRepository"
+]
