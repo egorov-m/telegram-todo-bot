@@ -9,6 +9,7 @@ from src.lexicon.translator import Translator
 
 class TransferData(TypedDict):
     pool: Callable[[], AsyncSession]  # Function for creating a session
+    db_session: AsyncSession
     dp: Dispatcher
     translator: Translator
 
