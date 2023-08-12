@@ -6,7 +6,7 @@ from typing import Optional
 import sqlalchemy as sa
 from sqlmodel import Field
 
-from .base import Base
+from db.models.base import Base
 
 
 class User(Base, table=True):

@@ -39,3 +39,26 @@ input_error_message = The data entered is not correct!
 settings_title = Bot settings ⚙️
 settings_languages_title = Select the language for the bot from the available.
 error_message = Such a message can't be processed, use the menu.
+
+user_agreement = Before using this bot, please read and agree to our terms of service. By using the bot, you agree to the following terms:
+
+                 1. User Responsibility:
+                 - You agree to use the bot only for lawful purposes and comply with all applicable laws and regulations.
+                 - You are responsible for any data you store or transmit through the bot.
+                 - You agree not to use the bot to distribute illegal, offensive, harmful, or indecent content.
+
+                 2. Privacy:
+                 - We strive to ensure the privacy of your data. However, we cannot guarantee absolute security of data transmission over the internet.
+                 - We will not disclose your personal information to third parties without your consent, except as required by law.
+
+                 3. Disclaimer:
+                 - We are not liable for any direct or indirect losses incurred as a result of using the bot.
+                 - We do not guarantee uninterrupted and error-free operation of the bot and are not responsible for any issues arising from its use.
+
+                 4. Changes to the Terms of Service:
+                 - We reserve the right to modify these terms of service. Changes will be effective upon posting.
+
+user_agreement_accepted_message = User agreement accepted ✅
+                                  Date: { $date }
+
+btn_user_agreement = I accept the user agreement ☑️

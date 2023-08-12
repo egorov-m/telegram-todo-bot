@@ -29,6 +29,7 @@ class UserRepository:
     @menage_db_method(CommitMode.FLUSH)
     async def create_user(self,
                           telegram_user_id: int,
+                          *,
                           current_language: str = "en_US",
                           is_user_agreement_acceptance: bool = False) -> User:
         if not re.match(self.lang_pattern, current_language):
@@ -48,6 +49,7 @@ class UserRepository:
     @menage_db_method(CommitMode.FLUSH)
     async def update_user(self,
                           telegram_user_id: int,
+                          *,
                           current_language: Optional[str] = None,
                           enabled: Optional[bool] = None,
                           last_activity_date: Optional[datetime] = None,

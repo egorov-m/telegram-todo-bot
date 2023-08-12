@@ -20,10 +20,10 @@ class TranslatorMiddleware(BaseMiddleware):
             data: TransferData
             ) -> Any:
 
-        lang_code: str = event.from_user.language_code
+        user_lang: str = data["active_user"].current_language
         locale: str = locales[0]
         for lc in locales:
-            if lc.split('_')[0] == lang_code:
+            if lc == user_lang:
                 locale = lc
                 break
         t = Locale.parse(locale)

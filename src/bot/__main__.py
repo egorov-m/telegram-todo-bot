@@ -11,10 +11,10 @@ from src.config import Config, load_config
 from src.logconfig import setup_logging
 from src.lexicon.translator import Translator
 from src.lexicon.translator import load_localizations
-from bot.structures.data_structure import TransferData
+from bot.structures.data_structure import TransferData, LoggerType
 from bot.dispatcher import get_dispatcher
 
-logger = log.getLogger('bot_logger')
+logger = log.getLogger(LoggerType.BOT_LOGGER)
 
 
 async def main() -> None:
@@ -39,7 +39,7 @@ async def main() -> None:
     sessionmaker = get_session_maker(async_engine)
 
     await bot.delete_webhook(drop_pending_updates=True)
-    await dp.start_polling(bot, **TransferData(dp=dp, pool=sessionmaker, translator=Translator()))
+    await dp.start_polling(bot, **TransferData(dispatcher=dp, pool=sessionmaker, translator=Translator()))
 
     # await set_main_menu(bot, lexicon)
 

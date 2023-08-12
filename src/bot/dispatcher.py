@@ -5,7 +5,7 @@ from src.config import DbRedisConfig
 from redis import Redis
 
 from src.bot.routers import routers
-from src.bot.middlewares.translator import TranslatorMiddleware
+from src.bot.middlewares import middlewares
 
 
 def get_redis_storage(config: DbRedisConfig) -> RedisStorage:
@@ -29,7 +29,8 @@ def get_dispatcher(storage: BaseStorage, fsm_strategy: FSMStrategy, name: str = 
     dp.include_routers(*routers)
 
     # Register middlewares
-    dp.message.middleware(TranslatorMiddleware())
-    dp.callback_query.middleware(TranslatorMiddleware())
+    for middleware in middlewares:
+        dp.message.middleware(middleware)
+        dp.callback_query.middleware(middleware)
 
     return dp

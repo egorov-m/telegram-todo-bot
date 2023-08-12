@@ -7,6 +7,10 @@ class MainCallback(CallbackData, prefix=BotItem.MAIN):
     pass
 
 
+class AcceptUserAgreementCallback(CallbackData, prefix=BotItem.USER_AGREEMENT):
+    pass
+
+
 class AddTaskCallback(CallbackData, prefix=BotItem.ADD_TASK):
     pass
 

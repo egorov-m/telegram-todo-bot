@@ -50,6 +50,7 @@ class TaskRepository:
     @menage_db_method(CommitMode.FLUSH)
     async def update_task(self,
                           task_id: UUID,
+                          *,
                           title: Optional[str] = None,
                           description: Optional[str] = None,
                           is_done: Optional[bool] = None,
