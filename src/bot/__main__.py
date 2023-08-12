@@ -4,10 +4,11 @@ import asyncio
 import logging as log
 
 from aiogram import Bot, Dispatcher
-from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.storage.redis import RedisStorage
+from redis.asyncio import Redis
 
 from db.database import create_async_engine, get_session_maker
-from src.config import Config, load_config
+from src.config import settings
 from src.logconfig import setup_logging
 from src.lexicon.translator import Translator
 from src.lexicon.translator import load_localizations
@@ -20,22 +21,17 @@ logger = log.getLogger(LoggerType.BOT_LOGGER)
 async def main() -> None:
     """Bot configuration and launch function
     """
-    config: Config = load_config('.env')
-    bot: Bot = Bot(token=config.bot.token, parse_mode='HTML')
+    bot: Bot = Bot(token=settings.TELEGRAM_API_BOT_TOKEN, parse_mode='HTML')
     logger.info('Starting bot')
 
-    # redis = Redis(host=config.dbRedis.db_host,
-    #               port=config.dbRedis.db_port,
-    #               db=config.dbRedis.db_name,
-    #               username=config.dbRedis.db_user,
-    #               password=config.dbRedis.db_password)
+    redis = Redis(host=settings.REDIS_HOST,
+                  port=settings.REDIS_PORT,
+                  db=settings.REDIS_DB)
 
-    # storage: RedisStorage = RedisStorage(redis=redis)
-    storage: MemoryStorage = MemoryStorage()
-    # strategy: FSMStrategy = FSMStrategy()
+    storage: RedisStorage = RedisStorage(redis=redis)
     dp: Dispatcher = get_dispatcher(storage=storage, fsm_strategy=None)
 
-    async_engine = create_async_engine(url=config.dbPostgres.get_url())
+    async_engine = create_async_engine(url=settings.get_postgres_url())
     sessionmaker = get_session_maker(async_engine)
 
     await bot.delete_webhook(drop_pending_updates=True)

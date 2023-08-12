@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  redis:
+    container_name: "redis"
+    image: redis:alpine
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+#      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - ./log/redis-server.log:/var/log/redis/redis-server.log
+    ports:
+      - "6379:6379"
+    networks:
+      - bot
+
+  bot_db:
+    container_name: "bot_db"
+    image: postgres:15.3-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=postgres
+      - POSTGRES_HOST=localhost
+      - POSTGRES_PORT=5432
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+    volumes:
+      - ./data/bot_db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - bot
+
+networks:
+  bot:
+    driver: bridge
