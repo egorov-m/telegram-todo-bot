@@ -4,14 +4,21 @@ from typing import Callable, TypedDict
 from aiogram import Dispatcher
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from db import Database
+from db.models import User
 from src.lexicon.translator import Translator
 
 
 class TransferData(TypedDict):
     pool: Callable[[], AsyncSession]  # Function for creating a session
-    db_session: AsyncSession
-    dp: Dispatcher
+    database: Database
+    dispatcher: Dispatcher
     translator: Translator
+    active_user: User
+
+
+class LoggerType(StrEnum):
+    BOT_LOGGER = 'bot_logger'
 
 
 class BotItem(StrEnum):

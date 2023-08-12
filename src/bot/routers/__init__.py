@@ -10,4 +10,11 @@ routers = [start_router,
            settings_router,
            add_task_router]
 
-__all__ = [routers]
+__all__ = [
+    "start_router",
+    "base_router",
+    "help_router",
+    "settings_router",
+    "add_task_router",
+    "routers"
+]

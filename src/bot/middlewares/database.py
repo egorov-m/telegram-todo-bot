@@ -5,6 +5,7 @@ from aiogram.types import Message, CallbackQuery
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.structures.data_structure import TransferData
+from db import Database
 
 
 class DatabaseMiddleware(BaseMiddleware):
@@ -21,7 +22,7 @@ class DatabaseMiddleware(BaseMiddleware):
 
         pool: Callable[[], AsyncSession] = data["pool"]
         session = pool()
-        data["db_session"] = session
+        data["database"] = Database(session)
         try:
             return await handler(event, data)
         finally:
