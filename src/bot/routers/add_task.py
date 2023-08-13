@@ -4,6 +4,8 @@ from aiogram.filters.callback_data import CallbackQuery
 from aiogram.fsm.state import default_state, State
 from aiogram.fsm.context import FSMContext
 
+from src.db import Database
+from src.db.models import User
 from src.bot.keyboards.add_task_kb import create_add_task_keyboard
 from src.bot.keyboards.main_kb import create_back_keyboard
 from src.bot.routers.start import start, btn_start
@@ -18,7 +20,7 @@ add_task_router = Router(name='add_task_router')
 
 
 @add_task_router.callback_query(AddTaskCallback.filter(), default_state, BotStates.bot_default_state)
-async def btn_add_task(callback: CallbackQuery, state: FSMContext, translator: Translator):
+async def btn_add_task(callback: CallbackQuery, state: FSMContext, translator: Translator, database: Database, active_user: User):
     """
     Handler for pressing the add task button
     """
@@ -28,7 +30,7 @@ async def btn_add_task(callback: CallbackQuery, state: FSMContext, translator: T
     kb = await create_back_keyboard(translator=translator)
     message: Message = callback.message
     await state.update_data({AddTaskStateData.ADD_TASK_MESSAGE: message})
-    await _edit_message(message, state, msg, kb, translator)
+    await _edit_message(message, state, msg, kb, translator, database, active_user)
 
 
 @add_task_router.callback_query(AddTaskSaveCallback.filter())
@@ -86,16 +88,24 @@ async def _get_add_task_subtitle(translator: Translator, state: State) -> str:
 
 
 @add_task_router.message(AddTaskStates.add_task_waiting_title_input)
-async def input_title_add_task(message: types.Message, state: FSMContext, translator: Translator):
+async def input_title_add_task(message: types.Message,
+                               state: FSMContext,
+                               translator: Translator,
+                               database: Database,
+                               active_user: User):
     """
     Task title input handler in the process of adding
     """
-    await input_title_add_task_for_str(message.text, state, translator)
+    await input_title_add_task_for_str(message.text, state, translator, database, active_user)
 
 
-async def input_title_add_task_for_str(message: str, state: FSMContext, translator: Translator):
+async def input_title_add_task_for_str(message: str,
+                                       state: FSMContext,
+                                       translator: Translator,
+                                       database: Database,
+                                       active_user: User):
     if _is_no_valid_input(message):
-        await _invalid_input(state, translator)
+        await _invalid_input(state, translator, database, active_user)
     else:
         await state.update_data({AddTaskStateData.TASK_TITLE: message})
         data = await state.get_data()
@@ -106,18 +116,26 @@ async def input_title_add_task_for_str(message: str, state: FSMContext, translat
                                                 data)
         kb = await create_add_task_keyboard(translator=translator, where_from=BotItem.ADD_TASK)
         await state.set_state(AddTaskStates.add_task_waiting_description_input)
-        await _edit_message(add_task_message, state, msg, kb, translator)
+        await _edit_message(add_task_message, state, msg, kb, translator, database, active_user)
 
 
 @add_task_router.message(AddTaskStates.add_task_waiting_description_input)
-async def input_description_aad_task(message: types.Message, state: FSMContext, translator: Translator):
+async def input_description_aad_task(message: types.Message,
+                                     state: FSMContext,
+                                     translator: Translator,
+                                     database: Database,
+                                     active_user: User):
     """
     Task description input handler in the process of adding
     """
-    await input_description_aad_task_for_str(message.text, state, translator)
+    await input_description_aad_task_for_str(message.text, state, translator, database, active_user)
 
 
-async def input_description_aad_task_for_str(message: str, state: FSMContext, translator: Translator):
+async def input_description_aad_task_for_str(message: str,
+                                             state: FSMContext,
+                                             translator: Translator,
+                                             database: Database,
+                                             active_user: User):
     if _is_no_valid_input(message):
         await _invalid_input(state, translator)
     else:
@@ -133,10 +151,13 @@ async def input_description_aad_task_for_str(message: str, state: FSMContext, tr
                                             where_from=BotItem.ADD_TASK,
                                             isSave=True)
         await state.set_state(AddTaskStates.add_task_waiting_confirmation)
-        await _edit_message(add_task_message, state, msg, kb, translator)
+        await _edit_message(add_task_message, state, msg, kb, translator, database, active_user)
 
 
-async def _invalid_input(state: FSMContext, translator: Translator) -> bool:
+async def _invalid_input(state: FSMContext,
+                         translator: Translator,
+                         database: Database,
+                         active_user: User) -> bool:
     """
     Editing the message in case of incorrect data entry by the user
     """
@@ -145,14 +166,16 @@ async def _invalid_input(state: FSMContext, translator: Translator) -> bool:
     st = await state.get_state()
     msg: str = _get_add_task_full_msg(translator, st, data, True)
     kb = await create_back_keyboard(translator=translator)
-    await _edit_message(add_task_message, state, msg, kb, translator)
+    await _edit_message(add_task_message, state, msg, kb, translator, database, active_user)
 
 
 async def _edit_message(message: types.Message,
                         state: FSMContext,
                         text: str,
                         kb: InlineKeyboardMarkup,
-                        translator: Translator):
+                        translator: Translator,
+                        database: Database,
+                        active_user: User):
     """
     Editing a message (an error handler has been added in case of incorrect messages)
     """
@@ -162,7 +185,7 @@ async def _edit_message(message: types.Message,
     except ValueError:
         await state.clear()
         await state.set_state(BotStates.bot_default_state)
-        await start(translator, message)
+        await start(translator, database, active_user, message)
 
 
 def _is_no_valid_input(text: str | None):

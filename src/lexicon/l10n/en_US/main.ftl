@@ -40,6 +40,12 @@ settings_title = Bot settings ⚙️
 settings_languages_title = Select the language for the bot from the available.
 error_message = Such a message can't be processed, use the menu.
 
+user_agreement_accepted_message = User agreement accepted ✅
+                                  Date: { $date }
+
+btn_user_agreement = User agreement 🔏
+btn_accept_user_agreement = I accept the user agreement ☑️
+
 user_agreement = Before using this bot, please read and agree to our terms of service. By using the bot, you agree to the following terms:
 
                  1. User Responsibility:
@@ -57,8 +63,3 @@ user_agreement = Before using this bot, please read and agree to our terms of se
 
                  4. Changes to the Terms of Service:
                  - We reserve the right to modify these terms of service. Changes will be effective upon posting.
-
-user_agreement_accepted_message = User agreement accepted ✅
-                                  Date: { $date }
-
-btn_user_agreement = I accept the user agreement ☑️

@@ -1,10 +1,12 @@
 from aiogram import Router
 from aiogram.filters.callback_data import CallbackQuery
 
-from db.repository import UserRepository
+from src.bot.routers.start import user_agreement_conclusion
+from src.db.repository import UserRepository
 from src.db import Database
 from src.db.models import User
-from src.bot.keyboards.callback_factories import SettingsCallback, LanguagesCallback, LanguageCallback
+from src.bot.keyboards.callback_factories import SettingsCallback, LanguagesCallback, LanguageCallback, \
+    UserAgreementCallback
 from src.bot.keyboards.settings_kb import create_settings_keyboard, create_languages_keyboard
 from src.bot.utils.html.message_template import bold_text
 from src.bot.structures.data_structure import BotBtnTitle, BotMessage
@@ -22,6 +24,11 @@ async def btn_settings(callback: CallbackQuery, translator: Translator):
                                      reply_markup=kb)
 
 
+@settings_router.callback_query(UserAgreementCallback.filter())
+async def btn_settings_user_agreement(callback: CallbackQuery, translator: Translator, active_user: User):
+    await user_agreement_conclusion(callback, translator, active_user)
+
+
 @settings_router.callback_query(LanguagesCallback.filter())
 async def btn_settings_languages(callback: CallbackQuery, translator: Translator):
     title: str = await translator.translate(BotMessage.SETTINGS_LANGUAGES_TITLE)
@@ -35,7 +42,7 @@ async def btn_language_selection(callback: CallbackQuery,
                                  active_user: User,
                                  database: Database):
     old_lang: str = active_user.current_language
-    # callback.data format language:en_US
+    # callback.data format: language:en_US
     new_lang: str = callback.data.split(":")[1]
     if old_lang != new_lang:
         repo: UserRepository = database.user

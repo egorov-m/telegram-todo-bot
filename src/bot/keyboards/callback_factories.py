@@ -7,10 +7,6 @@ class MainCallback(CallbackData, prefix=BotItem.MAIN):
     pass
 
 
-class AcceptUserAgreementCallback(CallbackData, prefix=BotItem.ACCEPTED_USER_AGREEMENT):
-    pass
-
-
 class AddTaskCallback(CallbackData, prefix=BotItem.ADD_TASK):
     pass
 
@@ -34,7 +30,7 @@ class EditTaskCallback(CallbackData, prefix=BotItem.EDIT_TASK):
 
 
 class UpdateListCallback(CallbackData, prefix=BotItem.UPDATE_LIST):
-    pass
+    task_list_hash: str = ""
 
 
 class SettingsCallback(CallbackData, prefix=BotItem.SETTINGS):
@@ -61,3 +57,11 @@ class LanguageCallback(CallbackData, prefix=BotItem.LANGUAGE):
     Callback - language selected
     """
     language: str
+
+
+class UserAgreementCallback(CallbackData, prefix=BotItem.USER_AGREEMENT):
+    pass
+
+
+class AcceptUserAgreementCallback(CallbackData, prefix=BotItem.ACCEPTED_USER_AGREEMENT):
+    pass

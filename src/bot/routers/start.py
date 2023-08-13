@@ -1,4 +1,5 @@
 from datetime import datetime
+from hashlib import sha1
 
 from aiogram import Router
 from aiogram.filters import Command, StateFilter
@@ -7,10 +8,11 @@ from aiogram.fsm.state import default_state
 from aiogram.types import CallbackQuery, Message
 
 from bot.states.state import BotStates
-from src.bot.structures.data_structure import BotMessage
+from src.db.models import Task
+from src.bot.structures.data_structure import BotMessage, BotItem
 from src.db import Database
 from src.db.models import User
-from src.bot.keyboards.callback_factories import MainCallback, AcceptUserAgreementCallback
+from src.bot.keyboards.callback_factories import MainCallback, AcceptUserAgreementCallback, UpdateListCallback
 from src.lexicon.translator import Translator, translate_list_all
 from src.bot.keyboards.main_kb import (
     create_start_keyboard,
@@ -19,7 +21,6 @@ from src.bot.keyboards.main_kb import (
     create_back_keyboard
 )
 from src.bot.utils.html.message_template import task_list, bold_text
-
 
 start_router = Router(name='start_router')
 
@@ -48,9 +49,11 @@ async def user_agreement_conclusion(event: Message | CallbackQuery,
         kb = await create_accept_user_agreement(translator=translator)
     else:
         # The agreement is accepted, we issue a note to that effect
-        accept: str = await translator.translate(BotMessage.USER_AGREEMENT_ACCEPTED_MESSAGE)
+        accept: str = await translator.translate(BotMessage.USER_AGREEMENT_ACCEPTED_MESSAGE,
+                                                 {"date": active_user.user_agreement_acceptance_date.strftime(
+                                                     "%Y-%m-%d %H:%M:%S %Z")})
         message: str = f"{message}\n\n{bold_text(accept)}"
-        kb = await create_back_keyboard(translator=translator)  # back to the main page
+        kb = await create_back_keyboard(translator=translator, where_from=BotItem.SETTINGS)  # back to the main page
 
     if isinstance(event, CallbackQuery):
         await event.message.edit_text(text=message, reply_markup=kb)
@@ -67,7 +70,7 @@ async def btn_accept_user_agreement(callback: CallbackQuery,
     await state.clear()
     await state.set_state(BotStates.bot_default_state)
     await database.user.update_user(active_user.telegram_user_id, user_agreement_acceptance_date=datetime.utcnow())
-    await start(translator, database, active_user, callback.message)
+    await start(translator, database, active_user, callback)
 
 
 @start_router.callback_query(MainCallback.filter())
@@ -78,16 +81,47 @@ async def btn_start(callback: CallbackQuery,
                     database: Database):
     await state.clear()
     await state.set_state(BotStates.bot_default_state)
-    await start(translator, database, active_user, callback.message)
+    tasks_hash: str = callback.data.split(":")[1]
+    await start(translator, database, active_user, callback, tasks_hash)
+
+
+@start_router.callback_query(UpdateListCallback.filter())
+async def btn_list_update(callback: CallbackQuery,
+                          translator: Translator,
+                          active_user: User,
+                          database: Database):
+    tasks_hash: str = callback.data.split(":")[1]
+    await start(translator, database, active_user, callback, tasks_hash)
 
 
 async def start(translator: Translator,
                 database: Database,
                 active_user: User,
-                message: Message):
+                event: Message | CallbackQuery,
+                task_list_hash: str = ""):
+    callback = None
+    if isinstance(event, CallbackQuery):
+        message: Message = event.message
+        callback: CallbackQuery = event
+    else:
+        message: Message = event
+    tasks = await database.task.get_tasks_for_user(active_user)
+
+    # Checking by hash whether the list needs to be updated
+    current_hash: str = _get_task_list_hash(tasks)
+    if task_list_hash == current_hash:
+        if callback is not None:
+            await callback.answer()
+        return
+
     title: str = await translator.translate(BotMessage.TASK_LIST_TITLE)
     empty: str = await translator.translate(BotMessage.TASK_LIST_EMPTY_MESSAGE)
-    tasks = await database.task.get_tasks_for_user(active_user)
-    kb = await create_main_keyboard(translator=translator)
-    await message.edit_text(text=task_list(tasks, title=title, empty_msg=empty),
-                            reply_markup=kb)
+    kb = await create_main_keyboard(translator=translator, task_list_hash=current_hash)
+    text = task_list(tasks, title=title, empty_msg=empty)
+    await message.edit_text(text=text, reply_markup=kb)
+
+
+def _get_task_list_hash(tasks: list[Task]) -> str:
+    sha1_hash = sha1()
+    sha1_hash.update(str(tasks).encode("utf-8"))
+    return sha1_hash.hexdigest()

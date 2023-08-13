@@ -62,6 +62,7 @@ class BotBtnTitle(StrEnum):
     LANGUAGES = "btn_languages_title"
     BACK = "btn_back_title"
     USER_AGREEMENT = "btn_user_agreement"
+    ACCEPT_USER_AGREEMENT = "btn_accept_user_agreement"
 
 
 class BotMessage(StrEnum):
