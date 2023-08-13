@@ -6,6 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
 from aiogram.types import CallbackQuery, Message
 
+from bot.states.state import BotStates
 from src.bot.structures.data_structure import BotMessage
 from src.db import Database
 from src.db.models import User
@@ -23,7 +24,11 @@ from src.bot.utils.html.message_template import task_list, bold_text
 start_router = Router(name='start_router')
 
 
-@start_router.message(Command(*translate_list_all('cmd_start')), StateFilter(default_state))
+@start_router.message(
+    Command(*translate_list_all('cmd_start')),
+    StateFilter(default_state,
+                BotStates.bot_default_state)
+)
 async def cmd_start(message: Message, translator: Translator):
     """
     Start command handler
@@ -35,22 +40,22 @@ async def cmd_start(message: Message, translator: Translator):
 
 
 async def user_agreement_conclusion(event: Message | CallbackQuery,
-                                    state: FSMContext,
                                     translator: Translator,
                                     active_user: User):
-    user_agreement: str = await translator.translate(BotMessage.USER_AGREEMENT)
+    message: str = await translator.translate(BotMessage.USER_AGREEMENT)
     if active_user.user_agreement_acceptance_date is None:
         # The user has not yet accepted the agreement, issue a button
         kb = await create_accept_user_agreement(translator=translator)
-        await event.edit_text(text=user_agreement,
-                              reply_markup=kb)
     else:
         # The agreement is accepted, we issue a note to that effect
         accept: str = await translator.translate(BotMessage.USER_AGREEMENT_ACCEPTED_MESSAGE)
-        message: str = f"{user_agreement}\n\n{bold_text(accept)}"
+        message: str = f"{message}\n\n{bold_text(accept)}"
         kb = await create_back_keyboard(translator=translator)  # back to the main page
-        await event.edit_text(text=message,
-                              reply_markup=kb)
+
+    if isinstance(event, CallbackQuery):
+        await event.message.edit_text(text=message, reply_markup=kb)
+    else:
+        await event.answer(text=message, reply_markup=kb)
 
 
 @start_router.callback_query(AcceptUserAgreementCallback.filter())
@@ -60,7 +65,7 @@ async def btn_accept_user_agreement(callback: CallbackQuery,
                                     database: Database,
                                     active_user: User):
     await state.clear()
-    await state.set_state(default_state)
+    await state.set_state(BotStates.bot_default_state)
     await database.user.update_user(active_user.telegram_user_id, user_agreement_acceptance_date=datetime.utcnow())
     await start(translator, database, active_user, callback.message)
 
@@ -72,7 +77,7 @@ async def btn_start(callback: CallbackQuery,
                     active_user: User,
                     database: Database):
     await state.clear()
-    await state.set_state(default_state)
+    await state.set_state(BotStates.bot_default_state)
     await start(translator, database, active_user, callback.message)
 
 

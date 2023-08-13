@@ -3,10 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine as _create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from .repository import (
-    TaskRepository,
-    UserRepository
-)
+from src.db.repository import UserRepository, TaskRepository
 
 
 def create_async_engine(url: URL | str, echo: bool = False) -> AsyncEngine:

@@ -1,6 +1,7 @@
 from typing import Optional
 from uuid import UUID
 
+from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
@@ -37,7 +38,7 @@ class TaskRepository:
         return new_task
 
     async def get_task(self, task_id: UUID) -> Task:
-        task = await self.session.execute(select(Task).where(Task.id == task_id).limit(1))
+        task = await self.session.get(Task, task_id)
 
         if task is None:
             raise ToDoBotError("Task not found", ToDoBotErrorCode.TASK_NOT_FOUND)
@@ -45,7 +46,10 @@ class TaskRepository:
         return task
 
     async def get_tasks_for_user(self, user: User) -> list[Task]:
-        return await self.session.execute(select(Task).where(Task.creator_telegram_user_id == user.telegram_user_id))
+        result: Result = await self.session.execute(
+            select(Task).where(Task.creator_telegram_user_id == user.telegram_user_id)
+        )
+        return result.scalars().all()
 
     @menage_db_method(CommitMode.FLUSH)
     async def update_task(self,
@@ -55,7 +59,7 @@ class TaskRepository:
                           description: Optional[str] = None,
                           is_done: Optional[bool] = None,
                           is_exist: Optional[bool] = None) -> Task:
-        task: Task = self.get_task(task_id)
+        task: Task = await self.get_task(task_id)
 
         if title is not None:
             task.title = title
@@ -70,12 +74,12 @@ class TaskRepository:
 
     @menage_db_method(CommitMode.FLUSH)
     async def update_status_task(self, task_id: UUID, is_done: bool) -> Task:
-        task: Task = self.get_task(task_id)
+        task: Task = await self.get_task(task_id)
         task.is_done = is_done
         return task
 
     @menage_db_method(CommitMode.FLUSH)
     async def delete_task(self, task_id: UUID) -> Task:
-        task: Task = self.get_task(task_id)
+        task: Task = await self.get_task(task_id)
         task.is_exist = False
         return task

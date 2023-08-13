@@ -7,7 +7,7 @@ class MainCallback(CallbackData, prefix=BotItem.MAIN):
     pass
 
 
-class AcceptUserAgreementCallback(CallbackData, prefix=BotItem.USER_AGREEMENT):
+class AcceptUserAgreementCallback(CallbackData, prefix=BotItem.ACCEPTED_USER_AGREEMENT):
     pass
 
 

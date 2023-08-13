@@ -11,13 +11,13 @@ from src.bot.states.data import AddTaskStateData
 from src.bot.utils.html.message_template import bold_text, italic_text
 from src.bot.keyboards.callback_factories import AddTaskCallback, AddTaskSaveCallback
 from src.bot.structures.data_structure import BotMessage, BotItem
-from src.bot.states.state import AddTaskStates
+from src.bot.states.state import AddTaskStates, BotStates
 from src.lexicon.translator import Translator
 
 add_task_router = Router(name='add_task_router')
 
 
-@add_task_router.callback_query(AddTaskCallback.filter(), default_state)
+@add_task_router.callback_query(AddTaskCallback.filter(), default_state, BotStates.bot_default_state)
 async def btn_add_task(callback: CallbackQuery, state: FSMContext, translator: Translator):
     """
     Handler for pressing the add task button
@@ -161,7 +161,7 @@ async def _edit_message(message: types.Message,
                                 reply_markup=kb)
     except ValueError:
         await state.clear()
-        await state.set_state(default_state)
+        await state.set_state(BotStates.bot_default_state)
         await start(translator, message)
 
 

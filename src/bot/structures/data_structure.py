@@ -24,6 +24,7 @@ class LoggerType(StrEnum):
 class BotItem(StrEnum):
     MAIN = "main"
     USER_AGREEMENT = "user_agreement"
+    ACCEPTED_USER_AGREEMENT = "accepted_user_agreement"
     ADD_TASK = "add_task"
     ADD_TASK_SAVE = "add_task_save"
     DELETE_TASK = "delete_task"
@@ -60,7 +61,7 @@ class BotBtnTitle(StrEnum):
     CANCEL = "btn_cancel_title"
     LANGUAGES = "btn_languages_title"
     BACK = "btn_back_title"
-    USER_AGREEMENT = "user_agreement"
+    USER_AGREEMENT = "btn_user_agreement"
 
 
 class BotMessage(StrEnum):

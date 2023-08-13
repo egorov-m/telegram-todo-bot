@@ -6,7 +6,7 @@ from aiogram import BaseMiddleware
 from aiogram.types import Message, CallbackQuery
 
 from src.bot.routers.start import user_agreement_conclusion
-from src.bot.structures.data_structure import TransferData, LoggerType
+from src.bot.structures.data_structure import TransferData, LoggerType, BotItem
 from src.db import Database
 from src.db.models import User
 from src.db.repository import UserRepository
@@ -32,10 +32,11 @@ class ActiveUserMiddleware(BaseMiddleware):
         telegram_user_id = event.from_user.id
         user: User
         try:
-            user = repo.get_user(telegram_user_id)
+            user = await repo.get_user(telegram_user_id)
         except ToDoBotError:
-            user_lang = normalize(event.from_user.language_code.replace('-', '_'))
-            user = await repo.create_user(telegram_user_id, user_lang)
+            user_lang = normalize(event.from_user.language_code.replace('-', '_')).split(".")[0]
+            # normalize format en_US.UTF-8, need: en_US
+            user = await repo.create_user(telegram_user_id, current_language=user_lang)
 
         data["active_user"] = user
         return await handler(event, data)
@@ -57,6 +58,10 @@ class ProtectionUserMiddleware(BaseMiddleware):
         if not user.enabled:
             pass
         elif user.user_agreement_acceptance_date is None:
-            return await user_agreement_conclusion(event, *data)
+            if isinstance(event, CallbackQuery) and event.data == BotItem.ACCEPTED_USER_AGREEMENT:
+                # so that there is no looping when you press the agreement button
+                return await handler(event, data)
+            else:
+                return await user_agreement_conclusion(event, data["translator"], user)
         else:
             return await handler(event, data)

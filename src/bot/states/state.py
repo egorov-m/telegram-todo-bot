@@ -8,6 +8,8 @@ class AddTaskStates(StatesGroup):
 
 
 class BotStates(StatesGroup):
+    bot_default_state = State()
+
     current_language = State()
 
     delete_task_waiting_select = State()

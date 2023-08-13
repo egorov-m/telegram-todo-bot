@@ -21,9 +21,10 @@ class DatabaseMiddleware(BaseMiddleware):
             ) -> Any:
 
         pool: Callable[[], AsyncSession] = data["pool"]
-        session = pool()
-        data["database"] = Database(session)
         try:
-            return await handler(event, data)
+            session: AsyncSession = pool()
+            async with session.begin() as transaction:
+                data["database"] = Database(session)
+                return await handler(event, data)
         finally:
             await session.close()

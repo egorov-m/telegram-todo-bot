@@ -17,7 +17,7 @@ def get_dispatcher(storage: BaseStorage, fsm_strategy: FSMStrategy, name: str = 
 
     # Register middlewares
     for middleware in middlewares:
-        dp.message.middleware(middleware)
-        dp.callback_query.middleware(middleware)
+        dp.message.middleware.register(middleware)
+        dp.callback_query.middleware.register(middleware)
 
     return dp
