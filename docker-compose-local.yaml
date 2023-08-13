@@ -12,7 +12,7 @@ services:
       retries: 10
     command: redis-server /usr/local/etc/redis/redis.conf
     volumes:
-#      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
       - ./log/redis-server.log:/var/log/redis/redis-server.log
     ports:
       - "6379:6379"

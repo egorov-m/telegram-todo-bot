@@ -5,9 +5,10 @@ from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
-from db.models import User
-from db.utils import menage_db_method, CommitMode
-from exceptions import ToDoBotError, ToDoBotErrorCode
+from src.bot.structures.role import Role
+from src.db.models import User
+from src.db.utils import menage_db_method, CommitMode
+from src.exceptions import ToDoBotError, ToDoBotErrorCode
 
 
 class UserRepository:
@@ -31,6 +32,8 @@ class UserRepository:
                           telegram_user_id: int,
                           *,
                           current_language: str = "en_US",
+                          enabled: bool = True,
+                          role: Role = Role.USER,
                           is_user_agreement_acceptance: bool = False) -> User:
         if not re.match(self.lang_pattern, current_language):
             raise ToDoBotError("The language is not in the correct format", ToDoBotErrorCode.USER_NOT_SPECIFIED)
@@ -39,7 +42,10 @@ class UserRepository:
         )
         if user is not None:
             raise ToDoBotError("The user already exists", ToDoBotErrorCode.USER_NOT_SPECIFIED)
-        new_user: User = User(telegram_user_id=telegram_user_id, current_language=current_language)
+        new_user: User = User(telegram_user_id=telegram_user_id,
+                              enabled=enabled,
+                              role=role,
+                              current_language=current_language)
         if is_user_agreement_acceptance:
             new_user.user_agreement_acceptance_date = datetime.utcnow()
 
@@ -52,6 +58,7 @@ class UserRepository:
                           *,
                           current_language: Optional[str] = None,
                           enabled: Optional[bool] = None,
+                          role: Optional[Role] = None,
                           last_activity_date: Optional[datetime] = None,
                           user_agreement_acceptance_date: Optional[datetime] = None) -> User:
         user: User = self.get_user(telegram_user_id)
@@ -60,6 +67,8 @@ class UserRepository:
             user.current_language = current_language
         if enabled is not None:
             user.enabled = enabled
+        if role is not None:
+            user.role = role
         if last_activity_date is not None:
             user.last_activity_date = last_activity_date
         if user_agreement_acceptance_date is not None:

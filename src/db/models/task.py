@@ -4,7 +4,8 @@ from uuid import UUID, uuid4
 import sqlalchemy as sa
 import sqlalchemy.dialects.postgresql as pg
 from sqlmodel import Field
-from .base import Base
+
+from src.db.models.base import Base
 
 
 class Task(Base, table=True):
@@ -19,8 +20,7 @@ class Task(Base, table=True):
     title: str = Field(nullable=False, max_length=64)
     description: str = Field(nullable=False, max_length=256)
     creator_telegram_user_id: int = Field(sa_column=sa.Column(sa.BigInteger,
-                                                              nullable=False,
-                                                              foreign_key="user.telegram_user_id"))
+                                                              nullable=False), foreign_key="user.telegram_user_id")
     created_date: datetime = Field(
         sa_column=sa.Column(
             sa.DateTime(timezone=True), nullable=False, server_default=sa.func.current_timestamp()

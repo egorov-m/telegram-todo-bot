@@ -6,7 +6,8 @@ from typing import Optional
 import sqlalchemy as sa
 from sqlmodel import Field
 
-from db.models.base import Base
+from src.bot.structures.role import Role
+from src.db.models.base import Base
 
 
 class User(Base, table=True):
@@ -20,6 +21,7 @@ class User(Base, table=True):
         sa_column=sa.Column(sa.DateTime(timezone=True), nullable=False, server_default=sa.func.current_timestamp())
     )
     enabled: bool = Field(sa_column=sa.Column(sa.Boolean, nullable=False, server_default=sa.true()))
+    role: Role = Field(sa_column=sa.Column(sa.Enum(Role), nullable=False, default=Role.USER))
     last_activity_date: Optional[datetime] = Field(
         sa_column=sa.Column(sa.DateTime(timezone=True), nullable=True, server_default=sa.func.current_timestamp())
     )
@@ -31,5 +33,6 @@ class User(Base, table=True):
                f"current_language={self.current_language!r}" \
                f"created_date={self.created_date!r}, " \
                f"enabled={self.enabled!r}, " \
+               f"role={self.role!r}, " \
                f"last_activity_date={self.last_activity_date!r}, " \
                f"user_agreement_acceptance_date={self.user_agreement_acceptance_date!r})"

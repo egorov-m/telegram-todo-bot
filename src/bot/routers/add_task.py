@@ -4,11 +4,11 @@ from aiogram.filters.callback_data import CallbackQuery
 from aiogram.fsm.state import default_state, State
 from aiogram.fsm.context import FSMContext
 
-from bot.keyboards.add_task_kb import create_add_task_keyboard
-from bot.keyboards.main_kb import create_back_keyboard
-from bot.routers.start import start, btn_start
-from bot.states.data import AddTaskStateData
-from bot.utils.html.message_template import bold_text, italic_text
+from src.bot.keyboards.add_task_kb import create_add_task_keyboard
+from src.bot.keyboards.main_kb import create_back_keyboard
+from src.bot.routers.start import start, btn_start
+from src.bot.states.data import AddTaskStateData
+from src.bot.utils.html.message_template import bold_text, italic_text
 from src.bot.keyboards.callback_factories import AddTaskCallback, AddTaskSaveCallback
 from src.bot.structures.data_structure import BotMessage, BotItem
 from src.bot.states.state import AddTaskStates

@@ -4,7 +4,7 @@ from babel.core import Locale
 from aiogram import BaseMiddleware
 from aiogram.types import Message, CallbackQuery
 
-from bot.structures.data_structure import TransferData
+from src.bot.structures.data_structure import TransferData
 from src.lexicon.translator import locales, Translator as Tr
 
 

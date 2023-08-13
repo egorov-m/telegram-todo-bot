@@ -2,7 +2,7 @@
 
 from typing import List
 
-from db.models.task import Task
+from src.db.models.task import Task
 
 
 def task_list(tasks: List[Task], title: str | None = None, empty_msg: str | None = None) -> str:

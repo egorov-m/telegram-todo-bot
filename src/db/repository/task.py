@@ -4,9 +4,9 @@ from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
-from db.models import Task, User
-from db.utils import menage_db_method, CommitMode
-from exceptions import ToDoBotError, ToDoBotErrorCode
+from src.db.models import Task, User
+from src.db.utils import menage_db_method, CommitMode
+from src.exceptions import ToDoBotError, ToDoBotErrorCode
 
 
 class TaskRepository:

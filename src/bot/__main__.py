@@ -12,8 +12,8 @@ from src.config import settings
 from src.logconfig import setup_logging
 from src.lexicon.translator import Translator
 from src.lexicon.translator import load_localizations
-from bot.structures.data_structure import TransferData, LoggerType
-from bot.dispatcher import get_dispatcher
+from src.bot.structures.data_structure import TransferData, LoggerType
+from src.bot.dispatcher import get_dispatcher
 
 logger = log.getLogger(LoggerType.BOT_LOGGER)
 

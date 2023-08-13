@@ -4,8 +4,8 @@ from typing import Callable, TypedDict
 from aiogram import Dispatcher
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db import Database
-from db.models import User
+from src.db import Database
+from src.db.models import User
 from src.lexicon.translator import Translator
 
 

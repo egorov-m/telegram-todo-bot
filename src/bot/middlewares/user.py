@@ -5,12 +5,12 @@ import logging as log
 from aiogram import BaseMiddleware
 from aiogram.types import Message, CallbackQuery
 
-from bot.routers.start import user_agreement_conclusion
-from bot.structures.data_structure import TransferData, LoggerType
-from db import Database
-from db.models import User
-from db.repository import UserRepository
-from exceptions import ToDoBotError
+from src.bot.routers.start import user_agreement_conclusion
+from src.bot.structures.data_structure import TransferData, LoggerType
+from src.db import Database
+from src.db.models import User
+from src.db.repository import UserRepository
+from src.exceptions import ToDoBotError
 
 logger = log.getLogger(LoggerType.BOT_LOGGER)
 

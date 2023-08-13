@@ -6,9 +6,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
 from aiogram.types import CallbackQuery, Message
 
-from bot.structures.data_structure import BotMessage
-from db import Database
-from db.models import User
+from src.bot.structures.data_structure import BotMessage
+from src.db import Database
+from src.db.models import User
 from src.bot.keyboards.callback_factories import MainCallback, AcceptUserAgreementCallback
 from src.lexicon.translator import Translator, translate_list_all
 from src.bot.keyboards.main_kb import (

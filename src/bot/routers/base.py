@@ -3,12 +3,12 @@ from aiogram.fsm.context import FSMContext
 from aiogram.filters.callback_data import CallbackQuery
 from aiogram.fsm.state import default_state, State
 
-from bot.routers.add_task import btn_add_task, input_title_add_task_for_str
-from bot.routers.settings import btn_settings
-from bot.routers.start import btn_start
-from bot.states.data import AddTaskStateData
-from bot.states.state import AddTaskStates
-from bot.structures.data_structure import BotItem
+from src.bot.routers.add_task import btn_add_task, input_title_add_task_for_str
+from src.bot.routers.settings import btn_settings
+from src.bot.routers.start import btn_start
+from src.bot.states.data import AddTaskStateData
+from src.bot.states.state import AddTaskStates
+from src.bot.structures.data_structure import BotItem
 from src.bot.keyboards.callback_factories import BackCallback, CancelCallback
 from src.lexicon.translator import Translator
 

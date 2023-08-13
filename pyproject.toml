@@ -21,6 +21,7 @@ asyncpg = "^0.27.0"
 
 [tool.poetry.group.dev.dependencies]
 autopep8 = "^2.0.2"
+alembic = "^1.11.2"
 
 [build-system]
 requires = ["poetry-core"]

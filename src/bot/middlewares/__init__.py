@@ -1,8 +1,8 @@
 from aiogram import BaseMiddleware
 
-from bot.middlewares.database import DatabaseMiddleware
-from bot.middlewares.translator import TranslatorMiddleware
-from bot.middlewares.user import ActiveUserMiddleware, ProtectionUserMiddleware
+from src.bot.middlewares.database import DatabaseMiddleware
+from src.bot.middlewares.translator import TranslatorMiddleware
+from src.bot.middlewares.user import ActiveUserMiddleware, ProtectionUserMiddleware
 
 middlewares: list[BaseMiddleware] = [
     DatabaseMiddleware(),
