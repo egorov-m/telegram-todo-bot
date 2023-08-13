@@ -4,6 +4,7 @@ import asyncio
 import logging as log
 
 from aiogram import Bot, Dispatcher
+from aiogram.fsm.state import default_state
 from aiogram.fsm.storage.redis import RedisStorage
 from redis.asyncio import Redis
 
@@ -21,6 +22,9 @@ logger = log.getLogger(LoggerType.BOT_LOGGER)
 async def main() -> None:
     """Bot configuration and launch function
     """
+    # Redis: Invalid input of type: 'NoneType'. Convert to a bytes, string, int or float first.
+    default_state._state = "default"
+
     bot: Bot = Bot(token=settings.TELEGRAM_API_BOT_TOKEN, parse_mode='HTML')
     logger.info('Starting bot')
 

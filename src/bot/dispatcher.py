@@ -6,11 +6,9 @@ from src.bot.routers import routers
 from src.bot.middlewares import middlewares
 
 
-def get_dispatcher(storage: BaseStorage, fsm_strategy: FSMStrategy, name: str = 'BotDispatcher') -> Dispatcher:
-    """
-
-    """
-
+def get_dispatcher(storage: BaseStorage,
+                   fsm_strategy: FSMStrategy,
+                   name: str = 'BotDispatcher') -> Dispatcher:
     # Router Registrations
     dp = Dispatcher(storage=storage, fsm_strategy=fsm_strategy, name=name)
     dp.include_routers(*routers)

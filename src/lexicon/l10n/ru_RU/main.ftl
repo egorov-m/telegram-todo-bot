@@ -39,6 +39,7 @@ input_error_message = Введённые данные не корректны!
 settings_title = Настройки бота ⚙️
 settings_languages_title = Выберите язык для бота из доступных.
 error_message = Такое сообщение не может быть обработано, воспользуйтесь меню.
+exception_message = В боте произошло исключение, которое не может быть обработано!
 
 user_agreement_accepted_message = Пользовательское соглашение принято ✅
                                   Дата: { $date }

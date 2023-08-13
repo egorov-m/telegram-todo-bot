@@ -45,15 +45,15 @@ class Translator:
 
         return _localizations[locale]
 
-    async def translate(self, msg_id: str, args: dict[str, any] | None = None) -> str:
-        return self.localization.format_value(msg_id, args)
+    async def translate(self, msg_id: str, **kwargs: dict[str, any]) -> str:
+        return self.localization.format_value(msg_id, kwargs)
 
 
-def translate_list_all(msg_id: str, args: dict[str, any] | None = None) -> list[str]:
+def translate_list_all(msg_id: str, **kwargs: dict[str, any]) -> list[str]:
     """
     A method to get all translations for all locales at once as a list
     example:
     translate_list_all('cmd_start')
     ['start', 'старт', ...] # Outputs a list of all translations for the start command
     """
-    return split("\n+", _localization_all.format_value(msg_id, args))
+    return split("\n+", _localization_all.format_value(msg_id, kwargs))

@@ -26,11 +26,15 @@ async def btn_settings(callback: CallbackQuery, translator: Translator):
 
 @settings_router.callback_query(UserAgreementCallback.filter())
 async def btn_settings_user_agreement(callback: CallbackQuery, translator: Translator, active_user: User):
-    await user_agreement_conclusion(callback, translator, active_user)
+    await user_agreement_conclusion(callback,
+                                    active_user=active_user,
+                                    translator=translator)
 
 
 @settings_router.callback_query(LanguagesCallback.filter())
-async def btn_settings_languages(callback: CallbackQuery, translator: Translator):
+async def btn_settings_languages(callback: CallbackQuery,
+                                 *,
+                                 translator: Translator):
     title: str = await translator.translate(BotMessage.SETTINGS_LANGUAGES_TITLE)
     kb = await create_languages_keyboard(translator=translator)
     await callback.message.edit_text(text=bold_text(title),
@@ -39,8 +43,9 @@ async def btn_settings_languages(callback: CallbackQuery, translator: Translator
 
 @settings_router.callback_query(LanguageCallback.filter())
 async def btn_language_selection(callback: CallbackQuery,
-                                 active_user: User,
-                                 database: Database):
+                                 *,
+                                 database: Database,
+                                 active_user: User):
     old_lang: str = active_user.current_language
     # callback.data format: language:en_US
     new_lang: str = callback.data.split(":")[1]
@@ -48,6 +53,7 @@ async def btn_language_selection(callback: CallbackQuery,
         repo: UserRepository = database.user
         await repo.update_user(active_user.telegram_user_id, current_language=new_lang)
         new_translator: Translator = Translator(locale=new_lang)
-        await btn_settings_languages(callback, new_translator)
+        await btn_settings_languages(callback,
+                                     translator=new_translator)
     else:
         await callback.answer()

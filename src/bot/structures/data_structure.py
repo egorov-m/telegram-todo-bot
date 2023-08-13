@@ -19,6 +19,7 @@ class TransferData(TypedDict):
 
 class LoggerType(StrEnum):
     BOT_LOGGER = "bot_logger"
+    BOT_ERROR_LOGGER = "bot_error_logger"
 
 
 class BotItem(StrEnum):
@@ -79,6 +80,7 @@ class BotMessage(StrEnum):
     SETTINGS_TITLE = "settings_title"
     SETTINGS_LANGUAGES_TITLE = "settings_languages_title"
     ERROR_MESSAGE = "error_message"
+    EXCEPTION_MESSAGE = "exception_message"
 
     USER_AGREEMENT = "user_agreement"
     USER_AGREEMENT_ACCEPTED_MESSAGE = "user_agreement_accepted_message"

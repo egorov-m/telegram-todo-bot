@@ -2,12 +2,11 @@ from datetime import datetime
 from hashlib import sha1
 
 from aiogram import Router
-from aiogram.filters import Command, StateFilter
+from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
 from aiogram.types import CallbackQuery, Message
 
-from bot.states.state import BotStates
 from src.db.models import Task
 from src.bot.structures.data_structure import BotMessage, BotItem
 from src.db import Database
@@ -22,27 +21,24 @@ from src.bot.keyboards.main_kb import (
 )
 from src.bot.utils.html.message_template import task_list, bold_text
 
-start_router = Router(name='start_router')
+start_router = Router(name="start_router")
 
 
-@start_router.message(
-    Command(*translate_list_all('cmd_start')),
-    StateFilter(default_state,
-                BotStates.bot_default_state)
-)
+@start_router.message(Command(*translate_list_all("cmd_start")), default_state)
 async def cmd_start(message: Message, translator: Translator):
     """
     Start command handler
     """
-    title: str = await translator.translate('cmd_start_description')
+    title: str = await translator.translate("cmd_start_description")
     kb = await create_start_keyboard(translator=translator)
     await message.answer(text=bold_text(title),
                          reply_markup=kb)
 
 
 async def user_agreement_conclusion(event: Message | CallbackQuery,
-                                    translator: Translator,
-                                    active_user: User):
+                                    *,
+                                    active_user: User,
+                                    translator: Translator):
     message: str = await translator.translate(BotMessage.USER_AGREEMENT)
     if active_user.user_agreement_acceptance_date is None:
         # The user has not yet accepted the agreement, issue a button
@@ -50,10 +46,10 @@ async def user_agreement_conclusion(event: Message | CallbackQuery,
     else:
         # The agreement is accepted, we issue a note to that effect
         accept: str = await translator.translate(BotMessage.USER_AGREEMENT_ACCEPTED_MESSAGE,
-                                                 {"date": active_user.user_agreement_acceptance_date.strftime(
-                                                     "%Y-%m-%d %H:%M:%S %Z")})
+                                                 data=active_user.user_agreement_acceptance_date
+                                                 .strftime("%Y-%m-%d %H:%M:%S %Z"))
         message: str = f"{message}\n\n{bold_text(accept)}"
-        kb = await create_back_keyboard(translator=translator, where_from=BotItem.SETTINGS)  # back to the main page
+        kb = await create_back_keyboard(translator=translator, where_from=BotItem.SETTINGS)
 
     if isinstance(event, CallbackQuery):
         await event.message.edit_text(text=message, reply_markup=kb)
@@ -64,41 +60,55 @@ async def user_agreement_conclusion(event: Message | CallbackQuery,
 @start_router.callback_query(AcceptUserAgreementCallback.filter())
 async def btn_accept_user_agreement(callback: CallbackQuery,
                                     state: FSMContext,
-                                    translator: Translator,
+                                    *,
                                     database: Database,
-                                    active_user: User):
+                                    active_user: User,
+                                    translator: Translator):
     await state.clear()
-    await state.set_state(BotStates.bot_default_state)
-    await database.user.update_user(active_user.telegram_user_id, user_agreement_acceptance_date=datetime.utcnow())
-    await start(translator, database, active_user, callback)
+    await state.set_state(default_state)
+    await database.user.update_user(active_user.telegram_user_id,
+                                    user_agreement_acceptance_date=datetime.utcnow())
+    await start_page(callback,
+                     database=database,
+                     active_user=active_user,
+                     translator=translator)
 
 
 @start_router.callback_query(MainCallback.filter())
 async def btn_start(callback: CallbackQuery,
                     state: FSMContext,
-                    translator: Translator,
+                    *,
+                    database: Database,
                     active_user: User,
-                    database: Database):
+                    translator: Translator):
     await state.clear()
-    await state.set_state(BotStates.bot_default_state)
-    tasks_hash: str = callback.data.split(":")[1]
-    await start(translator, database, active_user, callback, tasks_hash)
+    await state.set_state(default_state)
+    await start_page(callback,
+                     database=database,
+                     active_user=active_user,
+                     translator=translator)
 
 
 @start_router.callback_query(UpdateListCallback.filter())
 async def btn_list_update(callback: CallbackQuery,
-                          translator: Translator,
+                          *,
+                          database: Database,
                           active_user: User,
-                          database: Database):
-    tasks_hash: str = callback.data.split(":")[1]
-    await start(translator, database, active_user, callback, tasks_hash)
+                          translator: Translator):
+    new_list_hash: str = callback.data.split(":")[1]
+    await start_page(callback,
+                     database=database,
+                     active_user=active_user,
+                     translator=translator,
+                     new_list_hash=new_list_hash)
 
 
-async def start(translator: Translator,
-                database: Database,
-                active_user: User,
-                event: Message | CallbackQuery,
-                task_list_hash: str = ""):
+async def start_page(event: Message | CallbackQuery,
+                     *,
+                     database: Database,
+                     active_user: User,
+                     translator: Translator,
+                     new_list_hash: str = ""):
     callback = None
     if isinstance(event, CallbackQuery):
         message: Message = event.message
@@ -108,20 +118,20 @@ async def start(translator: Translator,
     tasks = await database.task.get_tasks_for_user(active_user)
 
     # Checking by hash whether the list needs to be updated
-    current_hash: str = _get_task_list_hash(tasks)
-    if task_list_hash == current_hash:
+    current_list_hash: str = _get_list_hash(tasks)
+    if new_list_hash == current_list_hash:
         if callback is not None:
             await callback.answer()
         return
 
     title: str = await translator.translate(BotMessage.TASK_LIST_TITLE)
     empty: str = await translator.translate(BotMessage.TASK_LIST_EMPTY_MESSAGE)
-    kb = await create_main_keyboard(translator=translator, task_list_hash=current_hash)
+    kb = await create_main_keyboard(translator=translator, task_list_hash=current_list_hash)
     text = task_list(tasks, title=title, empty_msg=empty)
     await message.edit_text(text=text, reply_markup=kb)
 
 
-def _get_task_list_hash(tasks: list[Task]) -> str:
+def _get_list_hash(tasks: list[Task]) -> str:
     sha1_hash = sha1()
     sha1_hash.update(str(tasks).encode("utf-8"))
     return sha1_hash.hexdigest()

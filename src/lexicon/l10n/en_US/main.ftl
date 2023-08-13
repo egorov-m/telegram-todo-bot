@@ -39,6 +39,7 @@ input_error_message = The data entered is not correct!
 settings_title = Bot settings ⚙️
 settings_languages_title = Select the language for the bot from the available.
 error_message = Such a message can't be processed, use the menu.
+exception_message = An exception occurred in the bot that couldn't be handled!
 
 user_agreement_accepted_message = User agreement accepted ✅
                                   Date: { $date }
