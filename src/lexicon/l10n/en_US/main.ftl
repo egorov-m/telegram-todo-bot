@@ -8,12 +8,16 @@ cmd_help_description = A help message about the bot's capabilities.
 # Buttons
 btn_start_title = Start
 btn_add_task_title = Add Task ➕
+
 btn_delete_task_title = Delete Task ❌
+btn_delete_all_tasks_title = Delete all 🟥
+btn_delete_selected_tasks_title = Delete selected ❌
+
 btn_done_task_title = Done ✅ | not done 📌
 btn_edit_task_title = Edit Task ✏️
 btn_update_list_title = Update list 🔄
 btn_settings_title = Settings ⚙️
-btn_delete_all_title = Delete All ❌
+
 btn_save_title = Save ✅
 btn_cancel_title = Cancel ◀️
 btn_back_title = Back ◀️
@@ -34,6 +38,10 @@ add_task_enter_title = Enter the title of the new task:
 add_task_enter_description = Enter the description of the new task:
 add_task_confirm = Save a new task?
 
+delete_task_message_title = Deleting tasks ❌
+delete_task_message_subtitle = Press the buttons to select
+delete_task_info_message = Selected for deletion: { $count }
+
 input_error_message = The data entered is not correct!
 
 settings_title = Bot settings ⚙️
@@ -44,8 +52,8 @@ exception_message = An exception occurred in the bot that couldn't be handled!
 user_agreement_accepted_message = User agreement accepted ✅
                                   Date: { $date }
 
-btn_user_agreement = User agreement 🔏
-btn_accept_user_agreement = I accept the user agreement ☑️
+btn_user_agreement_title = User agreement 🔏
+btn_accept_user_agreement_title = I accept the user agreement ☑️
 
 user_agreement = Before using this bot, please read and agree to our terms of service. By using the bot, you agree to the following terms:
 

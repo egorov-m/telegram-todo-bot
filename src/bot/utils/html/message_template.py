@@ -14,13 +14,18 @@ def task_list(tasks: List[Task], title: str | None = None, empty_msg: str | None
             message += f"<i>{empty_msg}</i>"
     else:
         for task in tasks:
-            if task.is_done:
-                message += "✅ "
-            else:
-                message += "📌 "
+            message += f"{done_marker(task.is_done)} "
             message += f"<b>{task.title}</b>\n"
             message += f"        <i>{task.description}</i>\n"
     return message
+
+
+def deletion_marker(is_delete: bool):
+    return "❌" if is_delete else "🔘"
+
+
+def done_marker(is_done: bool):
+    return "✅" if is_done else "📌"
 
 
 def bold_text(text: str):

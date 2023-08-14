@@ -1,15 +1,16 @@
 from aiogram import Router
-from aiogram.types import Message, InlineKeyboardMarkup
+from aiogram.types import Message
 from aiogram.filters.callback_data import CallbackQuery
 from aiogram.fsm.state import default_state, State
 from aiogram.fsm.context import FSMContext
 
-from db.repository import TaskRepository
+from src.bot.routers.utils import edit_message
+from src.db.repository import TaskRepository
 from src.db import Database
 from src.db.models import User
 from src.bot.keyboards.add_task_kb import create_add_task_keyboard
 from src.bot.keyboards.main_kb import create_back_keyboard
-from src.bot.routers.start import start_page, btn_start
+from src.bot.routers.start import btn_start
 from src.bot.states.data import AddTaskStateData
 from src.bot.utils.html.message_template import bold_text, italic_text
 from src.bot.keyboards.callback_factories import AddTaskCallback, AddTaskSaveCallback
@@ -39,13 +40,13 @@ async def btn_add_task(callback: CallbackQuery,
     kb = await create_back_keyboard(translator=translator)
     message: Message = callback.message
     await state.update_data({AddTaskStateData.ADD_TASK_MESSAGE: message.json()})
-    await _edit_message(message,
-                        state,
-                        database=database,
-                        active_user=active_user,
-                        translator=translator,
-                        text=msg,
-                        kb=kb)
+    await edit_message(message,
+                       state,
+                       database=database,
+                       active_user=active_user,
+                       translator=translator,
+                       text=msg,
+                       kb=kb)
 
 
 @add_task_router.callback_query(AddTaskSaveCallback.filter())
@@ -154,13 +155,13 @@ async def input_title_add_task_for_str(text_message: str,
                                                 data=data)
         kb = await create_add_task_keyboard(translator=translator, where_from=BotItem.ADD_TASK)
         await state.set_state(AddTaskStates.add_task_waiting_description_input)
-        await _edit_message(add_task_message,
-                            state,
-                            database=database,
-                            active_user=active_user,
-                            translator=translator,
-                            text=msg,
-                            kb=kb)
+        await edit_message(add_task_message,
+                           state,
+                           database=database,
+                           active_user=active_user,
+                           translator=translator,
+                           text=msg,
+                           kb=kb)
 
 
 @add_task_router.message(AddTaskStates.add_task_waiting_description_input)
@@ -201,13 +202,13 @@ async def input_description_aad_task_for_str(text_message: str,
                                             where_from=BotItem.ADD_TASK,
                                             isSave=True)
         await state.set_state(AddTaskStates.add_task_waiting_confirmation)
-        await _edit_message(add_task_message,
-                            state,
-                            database=database,
-                            active_user=active_user,
-                            translator=translator,
-                            text=msg,
-                            kb=kb)
+        await edit_message(add_task_message,
+                           state,
+                           database=database,
+                           active_user=active_user,
+                           translator=translator,
+                           text=msg,
+                           kb=kb)
 
 
 async def _invalid_input(state: FSMContext,
@@ -226,36 +227,13 @@ async def _invalid_input(state: FSMContext,
                                       data=data,
                                       input_error=True)
     kb = await create_back_keyboard(translator=translator)
-    await _edit_message(add_task_message,
-                        state,
-                        database=database,
-                        active_user=active_user,
-                        translator=translator,
-                        text=msg,
-                        kb=kb)
-
-
-async def _edit_message(message: Message,
-                        state: FSMContext,
-                        *,
-                        database: Database,
-                        active_user: User,
-                        translator: Translator,
-                        text: str,
-                        kb: InlineKeyboardMarkup):
-    """
-    Editing a message (an error handler has been added in case of incorrect messages)
-    """
-    try:
-        await message.edit_text(text=text,
-                                reply_markup=kb)
-    except ValueError:
-        await state.clear()
-        await state.set_state(default_state)
-        await start_page(message,
-                         database=database,
-                         active_user=active_user,
-                         translator=translator)
+    await edit_message(add_task_message,
+                       state,
+                       database=database,
+                       active_user=active_user,
+                       translator=translator,
+                       text=msg,
+                       kb=kb)
 
 
 def _is_no_valid_input(text: str | None):

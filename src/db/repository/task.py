@@ -1,6 +1,7 @@
 from typing import Optional
 from uuid import UUID
 
+from sqlalchemy import update, and_
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
@@ -37,18 +38,27 @@ class TaskRepository:
         self.session.add(new_task)
         return new_task
 
-    async def get_task(self, task_id: UUID) -> Task:
+    async def get_task(self, task_id: UUID, is_existed: bool = True) -> Task:
         task = await self.session.get(Task, task_id)
+        if is_existed:
+            if not task.is_exist:
+                task = None
 
         if task is None:
             raise ToDoBotError("Task not found", ToDoBotErrorCode.TASK_NOT_FOUND)
 
         return task
 
-    async def get_tasks_for_user(self, user: User) -> list[Task]:
-        result: Result = await self.session.execute(
-            select(Task).where(Task.creator_telegram_user_id == user.telegram_user_id)
-        )
+    async def get_tasks_for_user(self, user: User, is_existed: bool = True) -> list[Task]:
+        if is_existed:
+            result: Result = await self.session.execute(
+                select(Task).where(and_(Task.creator_telegram_user_id == user.telegram_user_id, Task.is_exist == True))
+            )
+        else:
+            result: Result = await self.session.execute(
+                select(Task).where(Task.creator_telegram_user_id == user.telegram_user_id)
+            )
+
         return result.scalars().all()
 
     @menage_db_method(CommitMode.FLUSH)
@@ -79,7 +89,17 @@ class TaskRepository:
         return task
 
     @menage_db_method(CommitMode.FLUSH)
-    async def delete_task(self, task_id: UUID) -> Task:
+    async def delete_task(self, task_id: UUID, active_telegram_user_id: int | None = None) -> Task:
         task: Task = await self.get_task(task_id)
+        if active_telegram_user_id is not None:
+            if task.creator_telegram_user_id != active_telegram_user_id:
+                raise ToDoBotError(message="A user cannot delete another user's task",
+                                   error_code=ToDoBotErrorCode.USER_NOT_SPECIFIED)
         task.is_exist = False
         return task
+
+    @menage_db_method(CommitMode.FLUSH)
+    async def delete_task_for_user(self, user: User):
+        await self.session.execute(
+            update(Task).where(Task.creator_telegram_user_id == user.telegram_user_id).values(is_exist=False)
+        )

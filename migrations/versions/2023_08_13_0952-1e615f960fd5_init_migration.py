@@ -26,7 +26,7 @@ def upgrade() -> None:
     sa.Column('creator_telegram_user_id', sa.BigInteger(), nullable=False),
     sa.Column('created_date', sa.DateTime(timezone=True), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=False),
     sa.Column('is_done', sa.Boolean(), server_default=sa.text('false'), nullable=False),
-    sa.Column('is_exist', sa.Boolean(), server_default=sa.text('false'), nullable=False),
+    sa.Column('is_exist', sa.Boolean(), server_default=sa.text('true'), nullable=False),
     sa.Column('title', sqlmodel.sql.sqltypes.AutoString(length=64), nullable=False),
     sa.Column('description', sqlmodel.sql.sqltypes.AutoString(length=256), nullable=False),
     sa.PrimaryKeyConstraint('id')

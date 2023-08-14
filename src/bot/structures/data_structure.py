@@ -28,7 +28,12 @@ class BotItem(StrEnum):
     ACCEPTED_USER_AGREEMENT = "accepted_user_agreement"
     ADD_TASK = "add_task"
     ADD_TASK_SAVE = "add_task_save"
+
     DELETE_TASK = "delete_task"
+    DELETE_ALL_TASKS = "delete_all_tasks"
+    DELETE_SELECTED_TASKS = "delete_selected_tasks"
+    SELECT_DELETE_TASK = "select_delete_task"
+
     DONE_TASK = "done_task"
     EDIT_TASK = "edit_task"
     UPDATE_LIST = "update_list"
@@ -52,7 +57,11 @@ class BotBtnLanguageTitle(StrEnum):
 class BotBtnTitle(StrEnum):
     START = "btn_start_title"
     ADD_TASK = "btn_add_task_title"
+
     DELETE_TASK = "btn_delete_task_title"
+    DELETE_ALL_TASKS = "btn_delete_all_tasks_title"
+    DELETE_SELECTED_TASKS = "btn_delete_selected_tasks_title"
+
     DONE_TASK = "btn_done_task_title"
     EDIT_TASK = "btn_edit_task_title"
     UPDATE_LIST = "btn_update_list_title"
@@ -62,8 +71,8 @@ class BotBtnTitle(StrEnum):
     CANCEL = "btn_cancel_title"
     LANGUAGES = "btn_languages_title"
     BACK = "btn_back_title"
-    USER_AGREEMENT = "btn_user_agreement"
-    ACCEPT_USER_AGREEMENT = "btn_accept_user_agreement"
+    USER_AGREEMENT = "btn_user_agreement_title"
+    ACCEPT_USER_AGREEMENT = "btn_accept_user_agreement_title"
 
 
 class BotMessage(StrEnum):
@@ -74,6 +83,10 @@ class BotMessage(StrEnum):
     ADD_TASK_ENTER_TITLE = "add_task_enter_title"
     ADD_TASK_ENTER_DESCRIPTION = "add_task_enter_description"
     ADD_TASK_CONFIRM = "add_task_confirm"
+
+    DELETE_TASK_MESSAGE_TITLE = "delete_task_message_title"
+    DELETE_TASK_MESSAGE_SUBTITLE = "delete_task_message_subtitle"
+    DELETE_TASK_INFO_MESSAGE = "delete_task_info_message"
 
     INPUT_ERROR_MESSAGE = "input_error_message"
 

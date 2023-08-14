@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from src.bot.structures.data_structure import BotItem
 
 from aiogram.filters.callback_data import CallbackData
@@ -19,6 +21,18 @@ class AddTaskSaveCallback(CallbackData, prefix=BotItem.ADD_TASK_SAVE):
 
 class DeleteTaskCallback(CallbackData, prefix=BotItem.DELETE_TASK):
     pass
+
+
+class DeleteAllTasksCallback(CallbackData, prefix=BotItem.DELETE_ALL_TASKS):
+    pass
+
+
+class DeleteSelectedTasksCallback(CallbackData, prefix=BotItem.DELETE_SELECTED_TASKS):
+    pass
+
+
+class SelectTaskDeleteCallback(CallbackData, prefix=BotItem.SELECT_DELETE_TASK):
+    task_id: UUID
 
 
 class DoneTaskCallback(CallbackData, prefix=BotItem.DONE_TASK):

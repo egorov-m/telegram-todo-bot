@@ -30,7 +30,7 @@ class Task(Base, table=True):
         sa_column=sa.Column(sa.Boolean, default=False, server_default=sa.false(), nullable=False)
     )
     is_exist: bool = Field(
-        sa_column=sa.Column(sa.Boolean, default=True, server_default=sa.false(), nullable=False)
+        sa_column=sa.Column(sa.Boolean, default=True, server_default=sa.true(), nullable=False)
     )
 
     def __repr__(self) -> str:
