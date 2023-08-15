@@ -18,10 +18,14 @@ btn_all_done_task_title = Done all ❇️
 btn_nothing_done_task = Done nothing 📌
 
 btn_edit_task_title = Edit Task ✏️
+btn_edit_task_change_title = Change title
+btn_edit_task_change_description = Change description
+
 btn_update_list_title = Update list 🔄
 btn_settings_title = Settings ⚙️
 
 btn_save_title = Save ✅
+btn_apply_title = Apply ☑️
 btn_cancel_title = Cancel ◀️
 btn_back_title = Back ◀️
 btn_skip_title = Skip ⤵️
@@ -47,6 +51,15 @@ delete_task_info_message = Selected for deletion: { $count }
 
 done_task_message_title = Marking the done of tasks ✅
 done_task_message_subtitle = Press the buttons to done
+
+edit_task_message_title = Editing ✏️
+edit_task_message_subtitle = Press the button to select a task
+edit_task_message_subtitle_task = Task:
+                                  { $is_done } { $title }
+                                    { $description }
+edit_task_message_subtitle_edit = Select what you want to edit
+edit_task_message_enter_title = Enter a new task title
+edit_task_message_enter_description = Enter a new task description
 
 input_error_message = The data entered is not correct!
 

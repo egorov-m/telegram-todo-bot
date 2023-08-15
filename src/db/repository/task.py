@@ -52,11 +52,15 @@ class TaskRepository:
     async def get_tasks_for_user(self, user: User, is_existed: bool = True) -> list[Task]:
         if is_existed:
             result: Result = await self.session.execute(
-                select(Task).where(and_(Task.creator_telegram_user_id == user.telegram_user_id, Task.is_exist == True))
+                select(Task)
+                .where(and_(Task.creator_telegram_user_id == user.telegram_user_id, Task.is_exist == True))
+                .order_by(Task.title)
             )
         else:
             result: Result = await self.session.execute(
-                select(Task).where(Task.creator_telegram_user_id == user.telegram_user_id)
+                select(Task)
+                .where(Task.creator_telegram_user_id == user.telegram_user_id)
+                .order_by(Task.title)
             )
 
         return result.scalars().all()

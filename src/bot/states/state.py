@@ -17,6 +17,13 @@ class DoneTaskStates(StatesGroup):
     done_task_waiting_confirmation = State()
 
 
+class EditTaskStates(StatesGroup):
+    edit_task_waiting_select_task = State()
+    edit_task_waiting_select_edit_item = State()
+    edit_task_waiting_title_input = State()
+    edit_task_waiting_description_input = State()
+
+
 class BotStates(StatesGroup):
     current_language = State()
 

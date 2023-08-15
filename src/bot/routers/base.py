@@ -4,13 +4,14 @@ from aiogram import Router
 from aiogram.fsm.context import FSMContext
 from aiogram.filters.callback_data import CallbackQuery
 from aiogram.fsm.state import State, default_state
-from aiogram.types import Message, ErrorEvent, InlineKeyboardMarkup
+from aiogram.types import ErrorEvent
 
+from bot.routers.edit_task import btn_edit_task
 from src.db import Database
 from src.db.models import User
 from src.bot.routers.add_task import btn_add_task, input_title_add_task_for_str
 from src.bot.routers.settings import btn_settings
-from src.bot.routers.start import btn_start, start_page
+from src.bot.routers.start import btn_start
 from src.bot.states.data import AddTaskStateData
 from src.bot.states.state import AddTaskStates
 from src.bot.structures.data_structure import BotItem, BotMessage, LoggerType
@@ -56,6 +57,12 @@ async def btn_back(callback: CallbackQuery,
                                      database=database,
                                      active_user=active_user,
                                      translator=translator)
+        case BotItem.EDIT_TASK:
+            await btn_edit_task(callback,
+                                state,
+                                database=database,
+                                active_user=active_user,
+                                translator=translator)
         case _:
             await btn_cancel(callback,
                              state,
@@ -80,7 +87,7 @@ async def btn_cancel(callback: CallbackQuery,
                     translator=translator)
 
 
-# @base_router.errors()
+@base_router.errors()
 async def errors_bot_handler(event: ErrorEvent,
                              *,
                              translator: Translator):

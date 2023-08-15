@@ -59,6 +59,22 @@ class EditTaskCallback(CallbackData, prefix=BotItem.EDIT_TASK):
     pass
 
 
+class SelectTaskForEditCallback(CallbackData, prefix=BotItem.EDIT_TASK_SELECT):
+    task_id: UUID
+
+
+class EditTaskTitleCallback(CallbackData, prefix=BotItem.EDIT_TASK_TITLE):
+    pass
+
+
+class EditTaskDescriptionCallback(CallbackData, prefix=BotItem.EDIT_TASK_DESCRIPTION):
+    pass
+
+
+class SaveEditTaskCallback(CallbackData, prefix=BotItem.SAVE_EDIT_TASK):
+    pass
+
+
 class UpdateListCallback(CallbackData, prefix=BotItem.UPDATE_LIST):
     task_list_hash: str = ""
 

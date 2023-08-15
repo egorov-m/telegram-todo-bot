@@ -4,11 +4,11 @@ from aiogram.filters.callback_data import CallbackQuery
 from aiogram.fsm.state import default_state, State
 from aiogram.fsm.context import FSMContext
 
-from src.bot.routers.utils import edit_message
+from src.bot.routers.utils import edit_message, _is_no_valid_input
 from src.db.repository import TaskRepository
 from src.db import Database
 from src.db.models import User
-from src.bot.keyboards.add_task_kb import create_add_task_keyboard
+from src.bot.keyboards.task_kb import create_add_task_keyboard
 from src.bot.keyboards.main_kb import create_back_keyboard
 from src.bot.routers.start import btn_start
 from src.bot.states.data import AddTaskStateData
@@ -234,14 +234,3 @@ async def _invalid_input(state: FSMContext,
                        translator=translator,
                        text=msg,
                        kb=kb)
-
-
-def _is_no_valid_input(text: str | None):
-    """
-    Whether text input from a user is invalid
-    """
-    return (text is None or
-            text.isspace() or
-            text == '' or
-            text.__contains__("\"") or
-            text.__contains__("\'"))

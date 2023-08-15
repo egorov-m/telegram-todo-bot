@@ -1,6 +1,8 @@
 from enum import StrEnum
 from typing import TypedDict
 
+from aiogram.types import Message
+
 
 class AddTaskStateData(StrEnum):
     TASK_TITLE = "task_title"
@@ -16,3 +18,12 @@ class DoneTask(TypedDict):
 
 class DeletableTask(DoneTask):
     is_delete: bool
+
+
+class EditTask(DoneTask):
+    description: str
+
+
+class EditTaskStateData(TypedDict):
+    task: EditTask
+    edit_task_message: Message

@@ -46,7 +46,7 @@ async def user_agreement_conclusion(event: Message | CallbackQuery,
     else:
         # The agreement is accepted, we issue a note to that effect
         accept: str = await translator.translate(BotMessage.USER_AGREEMENT_ACCEPTED_MESSAGE,
-                                                 data=active_user.user_agreement_acceptance_date
+                                                 date=active_user.user_agreement_acceptance_date
                                                  .strftime("%Y-%m-%d %H:%M:%S %Z"))
         message: str = f"{message}\n\n{bold_text(accept)}"
         kb = await create_back_keyboard(translator=translator, where_from=BotItem.SETTINGS)

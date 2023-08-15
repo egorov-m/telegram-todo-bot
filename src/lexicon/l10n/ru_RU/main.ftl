@@ -18,10 +18,14 @@ btn_all_done_task_title = Выполнить все ❇️
 btn_nothing_done_task = Ничего не выполнено 📌
 
 btn_edit_task_title = Редактировать задачу ✏️
+btn_edit_task_change_title = Изменить заголовок
+btn_edit_task_change_description = Изменить описание
+
 btn_update_list_title = Обновить список 🔄
 btn_settings_title = Настройки ⚙️
 
 btn_save_title = Сохранить ✅
+btn_apply_title = Применить ☑️
 btn_cancel_title = Отменить ◀️
 btn_back_title = Назад ◀️
 btn_skip_title = Пропустить ⤵️
@@ -47,6 +51,15 @@ delete_task_info_message = Выбрано для удаления: { $count }
 
 done_task_message_title = Отметка о выполнении заданий ✅
 done_task_message_subtitle = Нажимайте кнопки для выполнения
+
+edit_task_message_title = Редактирование ✏️
+edit_task_message_subtitle = Нажмите на кнопку, чтобы выбрать задачу
+edit_task_message_subtitle_task = Задача:
+                                  { $is_done } { $title }
+                                    { $description }
+edit_task_message_subtitle_edit = Выберите, что нужно отредактировать
+edit_task_message_enter_title = Введите новый заголовок задачи
+edit_task_message_enter_description = Введите новое описание задачи
 
 input_error_message = Введённые данные не корректны!
 

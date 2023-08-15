@@ -29,3 +29,14 @@ async def edit_message(message: Message,
                          database=database,
                          active_user=active_user,
                          translator=translator)
+
+
+def _is_no_valid_input(text: str | None):
+    """
+    Whether text input from a user is invalid
+    """
+    return (text is None or
+            text.isspace() or
+            text == '' or
+            text.__contains__("\"") or
+            text.__contains__("\'"))

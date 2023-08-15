@@ -41,6 +41,11 @@ class BotItem(StrEnum):
     CHANGE_DONE_STATE_TASK = "change_done_state_task"
 
     EDIT_TASK = "edit_task"
+    EDIT_TASK_SELECT = "edit_task_select"
+    EDIT_TASK_TITLE = "edit_task_title"
+    EDIT_TASK_DESCRIPTION = "edit_task_description"
+    SAVE_EDIT_TASK = "save_edit_task"
+
     UPDATE_LIST = "update_list"
     SETTINGS = 'settings'
     SETTINGS_LANGUAGES = "settings_languages"
@@ -72,10 +77,14 @@ class BotBtnTitle(StrEnum):
     NOTHING_DONE_TASK = "btn_nothing_done_task"
 
     EDIT_TASK = "btn_edit_task_title"
+    CHANGE_TITLE = "btn_edit_task_change_title"
+    CHANGE_DESCRIPTION = "btn_edit_task_change_description"
+
     UPDATE_LIST = "btn_update_list_title"
     SETTINGS = "btn_settings_title"
     DELETE_ALL = "btn_delete_all_title"
     SAVE = "btn_save_title"
+    APPLY = "btn_apply_title"
     CANCEL = "btn_cancel_title"
     LANGUAGES = "btn_languages_title"
     BACK = "btn_back_title"
@@ -95,6 +104,13 @@ class BotMessage(StrEnum):
     DELETE_TASK_MESSAGE_TITLE = "delete_task_message_title"
     DELETE_TASK_MESSAGE_SUBTITLE = "delete_task_message_subtitle"
     DELETE_TASK_INFO_MESSAGE = "delete_task_info_message"
+
+    EDIT_TASK_MESSAGE_TITLE = "edit_task_message_title"
+    EDIT_TASK_MESSAGE_SUBTITLE = "edit_task_message_subtitle"
+    EDIT_TASK_MESSAGE_SUBTITLE_TASK = "edit_task_message_subtitle_task"
+    EDIT_TASK_MESSAGE_SUBTITLE_EDIT = "edit_task_message_subtitle_edit"
+    EDIT_TASK_MESSAGE_ENTER_TITLE = "edit_task_message_enter_title"
+    EDIT_TASK_MESSAGE_ENTER_DESCRIPTION = "edit_task_message_enter_description"
 
     DONE_TASK_MESSAGE_TITLE = "done_task_message_title"
     DONE_TASK_MESSAGE_SUBTITLE = "done_task_message_subtitle"
