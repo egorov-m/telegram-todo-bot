@@ -9,7 +9,7 @@ from src.bot.keyboards.callback_factories import (
     SelectTaskDeleteCallback,
     DeleteSelectedTasksCallback
 )
-from src.bot.keyboards.delete_task_kb import create_delete_task_keyboard
+from src.bot.keyboards.task_kb import create_delete_task_keyboard
 from src.bot.routers.utils import edit_message
 from src.bot.routers.start import btn_start
 from src.bot.states.data import DeletableTask
@@ -20,6 +20,7 @@ from src.db import Database
 from src.db.models import User, Task
 from src.db.repository import TaskRepository
 from src.lexicon import Translator
+
 
 delete_task_router = Router(name="delete_task_router")
 
@@ -107,7 +108,7 @@ async def btn_delete_all_tasks(callback: CallbackQuery,
                                active_user: User,
                                translator: Translator):
     repo: TaskRepository = database.task
-    await repo.delete_task_for_user(active_user)
+    await repo.delete_tasks_for_user(active_user)
     await btn_start(callback, state,
                     database=database,
                     active_user=active_user,

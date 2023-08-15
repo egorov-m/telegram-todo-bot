@@ -12,11 +12,13 @@ class DeleteTaskStates(StatesGroup):
     delete_task_waiting_confirmation = State()
 
 
-class BotStates(StatesGroup):
-    current_language = State()
-
+class DoneTaskStates(StatesGroup):
     done_task_waiting_select = State()
     done_task_waiting_confirmation = State()
+
+
+class BotStates(StatesGroup):
+    current_language = State()
 
     edit_task_waiting_select = State()
     edit_task_waiting_select_item_for_replacement = State()

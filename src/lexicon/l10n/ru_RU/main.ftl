@@ -14,6 +14,9 @@ btn_delete_all_tasks_title = Удалить все 🟥
 btn_delete_selected_tasks_title = Удалить выбранные ❌
 
 btn_done_task_title = Выполнено ✅ | не выполнено 📌
+btn_all_done_task_title = Выполнить все ❇️
+btn_nothing_done_task = Ничего не выполнено 📌
+
 btn_edit_task_title = Редактировать задачу ✏️
 btn_update_list_title = Обновить список 🔄
 btn_settings_title = Настройки ⚙️
@@ -41,6 +44,9 @@ add_task_confirm = Сохранить новую задачу?
 delete_task_message_title = Удаление задач ❌
 delete_task_message_subtitle = Нажимайте на кнопки для выбора
 delete_task_info_message = Выбрано для удаления: { $count }
+
+done_task_message_title = Отметка о выполнении заданий ✅
+done_task_message_subtitle = Нажимайте кнопки для выполнения
 
 input_error_message = Введённые данные не корректны!
 

@@ -14,6 +14,9 @@ btn_delete_all_tasks_title = Delete all 🟥
 btn_delete_selected_tasks_title = Delete selected ❌
 
 btn_done_task_title = Done ✅ | not done 📌
+btn_all_done_task_title = Done all ❇️
+btn_nothing_done_task = Done nothing 📌
+
 btn_edit_task_title = Edit Task ✏️
 btn_update_list_title = Update list 🔄
 btn_settings_title = Settings ⚙️
@@ -41,6 +44,9 @@ add_task_confirm = Save a new task?
 delete_task_message_title = Deleting tasks ❌
 delete_task_message_subtitle = Press the buttons to select
 delete_task_info_message = Selected for deletion: { $count }
+
+done_task_message_title = Marking the done of tasks ✅
+done_task_message_subtitle = Press the buttons to done
 
 input_error_message = The data entered is not correct!
 

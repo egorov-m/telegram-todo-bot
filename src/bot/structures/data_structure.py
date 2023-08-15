@@ -35,6 +35,11 @@ class BotItem(StrEnum):
     SELECT_DELETE_TASK = "select_delete_task"
 
     DONE_TASK = "done_task"
+    DONE_STATE_ALL_TASKS = "done_state_all_tasks"
+    DONE_STATE_NOTHING_TASKS = "done_state_nothing_tasks"
+    SAVE_DONE_STATE_TASKS = "save_done_state_tasks"
+    CHANGE_DONE_STATE_TASK = "change_done_state_task"
+
     EDIT_TASK = "edit_task"
     UPDATE_LIST = "update_list"
     SETTINGS = 'settings'
@@ -63,6 +68,9 @@ class BotBtnTitle(StrEnum):
     DELETE_SELECTED_TASKS = "btn_delete_selected_tasks_title"
 
     DONE_TASK = "btn_done_task_title"
+    ALL_DONE_TASK = "btn_all_done_task_title"
+    NOTHING_DONE_TASK = "btn_nothing_done_task"
+
     EDIT_TASK = "btn_edit_task_title"
     UPDATE_LIST = "btn_update_list_title"
     SETTINGS = "btn_settings_title"
@@ -87,6 +95,9 @@ class BotMessage(StrEnum):
     DELETE_TASK_MESSAGE_TITLE = "delete_task_message_title"
     DELETE_TASK_MESSAGE_SUBTITLE = "delete_task_message_subtitle"
     DELETE_TASK_INFO_MESSAGE = "delete_task_info_message"
+
+    DONE_TASK_MESSAGE_TITLE = "done_task_message_title"
+    DONE_TASK_MESSAGE_SUBTITLE = "done_task_message_subtitle"
 
     INPUT_ERROR_MESSAGE = "input_error_message"
 

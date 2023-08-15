@@ -39,6 +39,22 @@ class DoneTaskCallback(CallbackData, prefix=BotItem.DONE_TASK):
     pass
 
 
+class DoneStateAllTasksCallback(CallbackData, prefix=BotItem.DONE_STATE_ALL_TASKS):
+    pass
+
+
+class DoneStateNothingTasksCallback(CallbackData, prefix=BotItem.DONE_STATE_NOTHING_TASKS):
+    pass
+
+
+class SaveDoneStateTaskCallback(CallbackData, prefix=BotItem.SAVE_DONE_STATE_TASKS):
+    pass
+
+
+class ChangeDoneStateTaskCallback(CallbackData, prefix=BotItem.CHANGE_DONE_STATE_TASK):
+    task_id: UUID
+
+
 class EditTaskCallback(CallbackData, prefix=BotItem.EDIT_TASK):
     pass
 

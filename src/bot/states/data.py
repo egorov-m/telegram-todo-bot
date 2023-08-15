@@ -8,8 +8,11 @@ class AddTaskStateData(StrEnum):
     ADD_TASK_MESSAGE = "add_task_message"
 
 
-class DeletableTask(TypedDict):
+class DoneTask(TypedDict):
     task_id: str
-    is_delete: bool
     is_done: bool
     title: str
+
+
+class DeletableTask(DoneTask):
+    is_delete: bool

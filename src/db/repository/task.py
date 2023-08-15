@@ -89,6 +89,22 @@ class TaskRepository:
         return task
 
     @menage_db_method(CommitMode.FLUSH)
+    async def done_task(self, task_id: UUID, is_done: bool = True, active_telegram_user_id: int | None = None) -> Task:
+        task: Task = await self.get_task(task_id)
+        if active_telegram_user_id is not None:
+            if task.creator_telegram_user_id != active_telegram_user_id:
+                raise ToDoBotError(message="A user cannot done another user's task",
+                                   error_code=ToDoBotErrorCode.USER_NOT_SPECIFIED)
+        task.is_done = is_done
+        return task
+
+    @menage_db_method(CommitMode.FLUSH)
+    async def done_tasks_for_user(self, user: User, is_done: bool = True):
+        await self.session.execute(
+            update(Task).where(Task.creator_telegram_user_id == user.telegram_user_id).values(is_done=is_done)
+        )
+
+    @menage_db_method(CommitMode.FLUSH)
     async def delete_task(self, task_id: UUID, active_telegram_user_id: int | None = None) -> Task:
         task: Task = await self.get_task(task_id)
         if active_telegram_user_id is not None:
@@ -99,7 +115,7 @@ class TaskRepository:
         return task
 
     @menage_db_method(CommitMode.FLUSH)
-    async def delete_task_for_user(self, user: User):
+    async def delete_tasks_for_user(self, user: User):
         await self.session.execute(
             update(Task).where(Task.creator_telegram_user_id == user.telegram_user_id).values(is_exist=False)
         )
