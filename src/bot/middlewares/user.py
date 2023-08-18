@@ -38,7 +38,10 @@ class ActiveUserMiddleware(BaseMiddleware):
             # normalize format en_US.UTF-8, need: en_US
             user = await repo.create_user(telegram_user_id, current_language=user_lang)
 
-        await repo.update_user_last_activity(user.telegram_user_id)
+        await repo.update_user(user.telegram_user_id,
+                               username=event.from_user.username,
+                               first_name=event.from_user.first_name,
+                               last_name=event.from_user.last_name)
         data["active_user"] = user
         return await handler(event, data)
 

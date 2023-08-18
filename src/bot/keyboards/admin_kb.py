@@ -51,7 +51,10 @@ async def create_admin_users_keyboard(translator: Translator,
                                                        ).pack()))
     kb_builder.row(*pagination_buttons, width=3)
     kb_builder.row(*[InlineKeyboardButton(text=f"{enable_marker(user.enabled)} | "
+                                               f"@{user.username} | "
                                                f"{user.telegram_user_id} | "
+                                               f"{user.first_name} | "
+                                               f"{user.last_name} | "
                                                f"{await task_repository.get_count_tasks_for_user(user, is_existed=False)} | "
                                                f"{await task_repository.get_count_tasks_for_user(user, is_existed=False, is_done=True)}",
                                           callback_data=AdminPanelUserChangeAccessCallback(offset=offset,

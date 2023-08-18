@@ -33,8 +33,13 @@ async def btn_admin_panel(callback: CallbackQuery,
                           active_user: User,
                           translator: Translator):
     repo: TaskRepository = database.task
+    username = active_user.username
+    last_name = active_user.last_name
     admin_data: str = await translator.translate(BotMessage.ADMIN_PANEL_MESSAGE_ADMIN_DATA,
                                                  id=active_user.telegram_user_id,
+                                                 username=username if username is not None else "None",
+                                                 first_name=active_user.first_name,
+                                                 last_name=last_name if last_name is not None else "None",
                                                  created_date=active_user.created_date,
                                                  task_now=await repo.get_count_tasks_for_user(active_user),
                                                  task_all_time=await repo.get_count_tasks_for_user(active_user, is_existed=False),

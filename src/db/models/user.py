@@ -16,6 +16,9 @@ class User(Base, table=True):
     """
 
     telegram_user_id: int = Field(sa_column=sa.Column(sa.BigInteger, primary_key=True))
+    username: Optional[str] = Field(nullable=True, max_length=32, min_length=5)
+    first_name: Optional[str] = Field(nullable=True, max_length=255)
+    last_name: Optional[str] = Field(nullable=True, max_length=255)
     current_language: str = Field(nullable=False, max_length=5)  # format: en_US
     created_date: datetime = Field(
         sa_column=sa.Column(sa.DateTime(timezone=True), nullable=False, server_default=sa.func.current_timestamp())

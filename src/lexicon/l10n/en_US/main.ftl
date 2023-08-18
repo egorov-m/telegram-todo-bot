@@ -73,13 +73,16 @@ exception_message = An exception occurred in the bot that couldn't be handled!
 
 admin_panel_message_title = Administrator 🔑
 admin_panel_message_admin_data = Id: { $id }
+                                 Username: @{ $username }
+                                 First name: { $first_name }
+                                 Last name: { $last_name }
                                  Date of registration: { $created_date }
                                  Task now: { $task_now }
                                  Tasks all time: { $task_all_time }
                                  You've all done: { $you_done }
 admin_panel_users_message_title = Users 👤
 admin_panel_users_message_subtitle = Press the buttons to adjust user access
-admin_panel_users_message_user = access | id | tasks | done
+admin_panel_users_message_user = access | username | id | first_name | last_name | tasks | done
 
 user_agreement_accepted_message = User agreement accepted ✅
                                   Date: { $date }

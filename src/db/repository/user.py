@@ -79,13 +79,22 @@ class UserRepository:
     async def update_user(self,
                           telegram_user_id: int,
                           *,
+                          username: Optional[str] = None,
+                          first_name: Optional[str] = None,
+                          last_name: Optional[str] = None,
                           current_language: Optional[str] = None,
                           enabled: Optional[bool] = None,
                           role: Optional[Role] = None,
                           last_activity_date: Optional[datetime] = None,
-                          user_agreement_acceptance_date: Optional[datetime] = None) -> User:
+                          user_agreement_acceptance_date: Optional[datetime] = datetime.utcnow()) -> User:
         user: User = await self.get_user(telegram_user_id)
 
+        if username is not None:
+            user.username = username
+        if first_name is not None:
+            user.first_name = first_name
+        if last_name is not None:
+            user.last_name = last_name
         if current_language is not None:
             user.current_language = current_language
         if enabled is not None:
