@@ -18,7 +18,7 @@ from src.bot.keyboards.task_kb import create_edit_task_select_task_keyboard, cre
 from src.bot.routers.utils import edit_message, _is_no_valid_input
 from src.bot.states.state import EditTaskStates
 from src.bot.structures.data_structure import BotMessage
-from src.bot.utils.html.message_template import bold_text, italic_text, done_marker
+from src.bot.utils.message_template import bold_text, italic_text, done_marker
 from src.db import Database
 from src.db.models import User, Task
 from src.lexicon import Translator

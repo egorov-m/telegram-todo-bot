@@ -8,7 +8,7 @@ from src.db.models import User
 from src.bot.keyboards.callback_factories import SettingsCallback, LanguagesCallback, LanguageCallback, \
     UserAgreementCallback
 from src.bot.keyboards.settings_kb import create_settings_keyboard, create_languages_keyboard
-from src.bot.utils.html.message_template import bold_text
+from src.bot.utils.message_template import bold_text
 from src.bot.structures.data_structure import BotBtnTitle, BotMessage
 from src.lexicon.translator import Translator
 

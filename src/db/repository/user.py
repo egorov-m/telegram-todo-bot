@@ -2,7 +2,10 @@ import re
 from datetime import datetime
 from typing import Optional
 
+from sqlalchemy import desc, and_
+from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.functions import count
 from sqlmodel import select
 
 from src.bot.structures.role import Role
@@ -24,6 +27,30 @@ class UserRepository:
             raise ToDoBotError("User not found", ToDoBotErrorCode.USER_NOT_FOUND)
 
         return user
+
+    async def get_users(self,
+                        active_user: User,
+                        *,
+                        offset: int = 0,
+                        limit: int = 5) -> list[User]:
+        if active_user.role != Role.ADMINISTRATOR:
+            raise ToDoBotError("Only the administrator can retrieve users", ToDoBotErrorCode.USER_NOT_SPECIFIED)
+
+        result: Result = await self.session.execute(
+            select(User).where(User.telegram_user_id != active_user.telegram_user_id)
+            .order_by(desc(User.created_date), desc(User.telegram_user_id)).offset(offset).fetch(limit)
+        )
+        return result.scalars().all()
+
+    async def get_count_users(self, active_user: Optional[User] = None) -> int:
+        conditions = []
+        if active_user is not None:
+            conditions.append(User.telegram_user_id != active_user.telegram_user_id)
+        result: Result = await self.session.execute(
+            select(count(User.telegram_user_id)).where(and_(*conditions))
+        )
+
+        return int(result.scalars().all()[0])
 
     @menage_db_method(CommitMode.FLUSH)
     async def create_user(self,

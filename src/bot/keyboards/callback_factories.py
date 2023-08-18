@@ -83,6 +83,19 @@ class SettingsCallback(CallbackData, prefix=BotItem.SETTINGS):
     pass
 
 
+class AdminPanelCallback(CallbackData, prefix=BotItem.ADMIN_PANEL):
+    pass
+
+
+class AdminPanelUsersCallback(CallbackData, prefix=BotItem.ADMIN_PANEL_USERS):
+    offset: int = 0
+
+
+class AdminPanelUserChangeAccessCallback(AdminPanelUsersCallback, prefix=BotItem.ADMIN_PANEL_USER_ACCESS):
+    user_id: int
+    enabled: bool
+
+
 class BackCallback(CallbackData, prefix=BotItem.BACK):
     where_from: str = BotItem.MAIN
 
@@ -95,6 +108,10 @@ class LanguagesCallback(CallbackData, prefix=BotItem.SETTINGS_LANGUAGES):
     """
     Callback - Bot language settings section
     """
+    pass
+
+
+class EmptyCallback(CallbackData, prefix=BotItem.EMPTY):
     pass
 
 

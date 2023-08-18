@@ -1,4 +1,5 @@
 from enum import StrEnum
+from typing import Optional
 
 from aiogram.filters.callback_data import CallbackData
 from aiogram.utils.keyboard import (
@@ -7,6 +8,8 @@ from aiogram.utils.keyboard import (
     InlineKeyboardButton,
 )
 
+from src.bot.structures.role import Role
+from src.db.models import User
 from src.bot.keyboards.callback_factories import (
     MainCallback,
     AcceptUserAgreementCallback,
@@ -16,7 +19,8 @@ from src.bot.keyboards.callback_factories import (
     EditTaskCallback,
     UpdateListCallback,
     SettingsCallback,
-    BackCallback
+    BackCallback,
+    AdminPanelCallback
 )
 from src.bot.structures.data_structure import BotBtnTitle, BotItem
 from src.lexicon.translator import Translator
@@ -56,7 +60,9 @@ async def create_back_keyboard(translator: Translator, where_from: BotItem = Bot
     return kb_builder.as_markup()
 
 
-async def create_main_keyboard(translator: Translator, task_list_hash: str | None = None) -> InlineKeyboardMarkup:
+async def create_main_keyboard(translator: Translator,
+                               active_user: Optional[User] = None,
+                               task_list_hash: Optional[str] = None) -> InlineKeyboardMarkup:
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
     buttons: list[InlineKeyboardButton] = [InlineKeyboardButton(text=await translator.translate(key),
                                                                 callback_data=value.pack()) for key, value in _buttons_data.items()]
@@ -65,5 +71,9 @@ async def create_main_keyboard(translator: Translator, task_list_hash: str | Non
         button: InlineKeyboardButton = buttons[-2]
         button.callback_data = UpdateListCallback(task_list_hash=task_list_hash).pack()
     kb_builder.row(*buttons, width=2)
+
+    if active_user is not None and active_user.role == Role.ADMINISTRATOR:
+        kb_builder.row(InlineKeyboardButton(text=await translator.translate(BotBtnTitle.ADMIN_PANEL),
+                                            callback_data=AdminPanelCallback().pack()), width=1)
 
     return kb_builder.as_markup()

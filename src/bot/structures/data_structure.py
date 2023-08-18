@@ -47,8 +47,14 @@ class BotItem(StrEnum):
     SAVE_EDIT_TASK = "save_edit_task"
 
     UPDATE_LIST = "update_list"
-    SETTINGS = 'settings'
+    SETTINGS = "settings"
+
+    ADMIN_PANEL = "admin_panel"
+    ADMIN_PANEL_USERS = "admin_panel_users"
+    ADMIN_PANEL_USER_ACCESS = "admin_panel_user_access"
+
     SETTINGS_LANGUAGES = "settings_languages"
+    EMPTY = "empty"
     BACK = "back"
     CANCEL = "cancel"
     LANGUAGE = "language"
@@ -91,6 +97,9 @@ class BotBtnTitle(StrEnum):
     USER_AGREEMENT = "btn_user_agreement_title"
     ACCEPT_USER_AGREEMENT = "btn_accept_user_agreement_title"
 
+    ADMIN_PANEL = "btn_admin_panel"
+    ADMIN_PANEL_USERS = "btn_admin_panel_users"
+
 
 class BotMessage(StrEnum):
     TASK_LIST_TITLE = "task_list_title"
@@ -119,8 +128,18 @@ class BotMessage(StrEnum):
 
     SETTINGS_TITLE = "settings_title"
     SETTINGS_LANGUAGES_TITLE = "settings_languages_title"
+
+    ADMIN_PANEL_MESSAGE_TITLE = "admin_panel_message_title"
+    ADMIN_PANEL_MESSAGE_ADMIN_DATA = "admin_panel_message_admin_data"
+    ADMIN_PANEL_USERS_MESSAGE_TITLE = "admin_panel_users_message_title"
+    ADMIN_PANEL_USERS_MESSAGE_SUBTITLE = "admin_panel_users_message_subtitle"
+    ADMIN_PANEL_USERS_MESSAGE_USER = "admin_panel_users_message_user"
+
     ERROR_MESSAGE = "error_message"
     EXCEPTION_MESSAGE = "exception_message"
 
     USER_AGREEMENT = "user_agreement"
     USER_AGREEMENT_ACCEPTED_MESSAGE = "user_agreement_accepted_message"
+
+    USER_LOCKOUT_MESSAGE_TITLE = "user_lockout_message_title"
+    USER_LOCKOUT_MESSAGE = "user_lockout_message"

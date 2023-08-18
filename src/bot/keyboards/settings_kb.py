@@ -2,8 +2,12 @@ from typing import List, AsyncGenerator
 
 from aiogram.utils.keyboard import InlineKeyboardBuilder, InlineKeyboardMarkup, InlineKeyboardButton
 
-from src.bot.keyboards.callback_factories import LanguagesCallback, LanguageCallback, BackCallback, \
+from src.bot.keyboards.callback_factories import (
+    LanguagesCallback,
+    LanguageCallback,
+    BackCallback,
     UserAgreementCallback
+)
 from src.bot.structures.data_structure import BotItem, BotLanguage, BotBtnLanguageTitle, BotBtnTitle
 from src.lexicon.translator import Translator
 

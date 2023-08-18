@@ -24,6 +24,9 @@ btn_edit_task_change_description = Change description
 btn_update_list_title = Update list 🔄
 btn_settings_title = Settings ⚙️
 
+btn_admin_panel = Admin panel 🔑
+btn_admin_panel_users = Users 👤
+
 btn_save_title = Save ✅
 btn_apply_title = Apply ☑️
 btn_cancel_title = Cancel ◀️
@@ -68,11 +71,24 @@ settings_languages_title = Select the language for the bot from the available.
 error_message = Such a message can't be processed, use the menu.
 exception_message = An exception occurred in the bot that couldn't be handled!
 
+admin_panel_message_title = Administrator 🔑
+admin_panel_message_admin_data = Id: { $id }
+                                 Date of registration: { $created_date }
+                                 Task now: { $task_now }
+                                 Tasks all time: { $task_all_time }
+                                 You've all done: { $you_done }
+admin_panel_users_message_title = Users 👤
+admin_panel_users_message_subtitle = Press the buttons to adjust user access
+admin_panel_users_message_user = access | id | tasks | done
+
 user_agreement_accepted_message = User agreement accepted ✅
                                   Date: { $date }
 
 btn_user_agreement_title = User agreement 🔏
 btn_accept_user_agreement_title = I accept the user agreement ☑️
+
+user_lockout_message_title = Lockout 🔒
+user_lockout_message = You have been blocked or do not have access. If you think this is an error, please contact an administrator.
 
 user_agreement = Before using this bot, please read and agree to our terms of service. By using the bot, you agree to the following terms:
 

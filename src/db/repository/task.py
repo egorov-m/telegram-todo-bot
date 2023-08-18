@@ -1,7 +1,7 @@
 from typing import Optional
 from uuid import UUID
 
-from sqlalchemy import update, and_
+from sqlalchemy import update, and_, func
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
@@ -49,21 +49,30 @@ class TaskRepository:
 
         return task
 
-    async def get_tasks_for_user(self, user: User, is_existed: bool = True) -> list[Task]:
+    async def _get_tasks_for_user(self,
+                                  user: User,
+                                  selection: type[Task],
+                                  is_existed: bool = True,
+                                  is_done: bool | None = None) -> list[Task]:
+        conditions = [Task.creator_telegram_user_id == user.telegram_user_id]
         if is_existed:
-            result: Result = await self.session.execute(
-                select(Task)
-                .where(and_(Task.creator_telegram_user_id == user.telegram_user_id, Task.is_exist == True))
-                .order_by(Task.title)
-            )
-        else:
-            result: Result = await self.session.execute(
-                select(Task)
-                .where(Task.creator_telegram_user_id == user.telegram_user_id)
-                .order_by(Task.title)
-            )
+            conditions.append(Task.is_exist == True)
+        if is_done is not None:
+            conditions.append(Task.is_done == is_done)
+
+        where = and_(*conditions)
+        st = select(selection).where(where)
+        if isinstance(selection, type(Task)):
+            st.order_by(Task.title)
+        result: Result = await self.session.execute(st)
 
         return result.scalars().all()
+
+    async def get_tasks_for_user(self, user: User, is_existed: bool = True, is_done: bool | None = None) -> list[Task]:
+        return await self._get_tasks_for_user(user, Task, is_existed, is_done)
+
+    async def get_count_tasks_for_user(self, user: User, is_existed: bool = True, is_done: bool | None = None) -> int:
+        return (await self._get_tasks_for_user(user, func.count(Task.id), is_existed, is_done))[0]
 
     @menage_db_method(CommitMode.FLUSH)
     async def update_task(self,

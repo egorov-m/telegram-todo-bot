@@ -16,7 +16,7 @@ from src.bot.routers.utils import edit_message
 from src.bot.states.data import DoneTask
 from src.bot.states.state import DoneTaskStates
 from src.bot.structures.data_structure import BotMessage
-from src.bot.utils.html.message_template import bold_text, italic_text
+from src.bot.utils.message_template import bold_text, italic_text
 from src.db import Database
 from src.db.models import User, Task
 from src.db.repository import TaskRepository

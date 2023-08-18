@@ -6,6 +6,7 @@ from .add_task import add_task_router
 from .delete_task import delete_task_router
 from .done_task import done_task_router
 from .edit_task import edit_task_router
+from .admin import admin_panel_router
 
 routers = [start_router,
            base_router,
@@ -14,7 +15,8 @@ routers = [start_router,
            add_task_router,
            delete_task_router,
            done_task_router,
-           edit_task_router]
+           edit_task_router,
+           admin_panel_router]
 
 __all__ = [
     "start_router",
@@ -25,5 +27,6 @@ __all__ = [
     "delete_task_router",
     "done_task_router",
     "edit_task_router",
+    "admin_panel_router",
     "routers"
 ]

@@ -19,7 +19,7 @@ from src.bot.keyboards.callback_factories import (
 )
 from src.bot.states.data import DeletableTask, DoneTask, AddTaskStateData
 from src.bot.structures.data_structure import BotBtnTitle, BotItem
-from src.bot.utils.html.message_template import deletion_marker, done_marker
+from src.bot.utils.message_template import deletion_marker, done_marker
 from src.db.models import Task
 from src.lexicon import Translator
 

@@ -24,6 +24,10 @@ def deletion_marker(is_delete: bool):
     return "❌" if is_delete else "🔘"
 
 
+def enable_marker(is_enable: bool):
+    return "🟢" if is_enable else "⭕️"
+
+
 def done_marker(is_done: bool):
     return "✅" if is_done else "📌"
 

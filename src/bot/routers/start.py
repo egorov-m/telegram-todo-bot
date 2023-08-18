@@ -19,7 +19,7 @@ from src.bot.keyboards.main_kb import (
     create_accept_user_agreement,
     create_back_keyboard
 )
-from src.bot.utils.html.message_template import task_list, bold_text
+from src.bot.utils.message_template import task_list, bold_text, italic_text
 
 start_router = Router(name="start_router")
 
@@ -33,6 +33,19 @@ async def cmd_start(message: Message, translator: Translator):
     kb = await create_start_keyboard(translator=translator)
     await message.answer(text=bold_text(title),
                          reply_markup=kb)
+
+
+async def user_lockout_message(event: Message | CallbackQuery,
+                               *,
+                               translator: Translator):
+    message: str = f"{bold_text(await translator.translate(BotMessage.USER_LOCKOUT_MESSAGE_TITLE))}\n\n" \
+                   f"{italic_text(await translator.translate(BotMessage.USER_LOCKOUT_MESSAGE))}"
+    if isinstance(event, Message):
+        event: Message
+        await event.answer(text=message)
+    else:
+        event: CallbackQuery
+        await event.message.edit_text(text=message)
 
 
 async def user_agreement_conclusion(event: Message | CallbackQuery,
@@ -126,7 +139,7 @@ async def start_page(event: Message | CallbackQuery,
 
     title: str = await translator.translate(BotMessage.TASK_LIST_TITLE)
     empty: str = await translator.translate(BotMessage.TASK_LIST_EMPTY_MESSAGE)
-    kb = await create_main_keyboard(translator=translator, task_list_hash=current_list_hash)
+    kb = await create_main_keyboard(translator=translator, active_user=active_user, task_list_hash=current_list_hash)
     text = task_list(tasks, title=title, empty_msg=empty)
     await message.edit_text(text=text, reply_markup=kb)
 
