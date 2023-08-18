@@ -23,6 +23,7 @@ btn_edit_task_change_description = Change description
 
 btn_update_list_title = Update list 🔄
 btn_settings_title = Settings ⚙️
+btn_about_title = About ℹ️
 
 btn_admin_panel = Admin panel 🔑
 btn_admin_panel_users = Users 👤
@@ -68,6 +69,11 @@ input_error_message = The data entered is not correct!
 
 settings_title = Bot settings ⚙️
 settings_languages_title = Select the language for the bot from the available.
+
+about_title = About ℹ️
+about_description = This task list bot is created for educational purposes.
+                    The project code is available in the <a href="https://github.com/egorov-m/telegram-todo-bot">repository</a>.
+
 error_message = Such a message can't be processed, use the menu.
 exception_message = An exception occurred in the bot that couldn't be handled!
 

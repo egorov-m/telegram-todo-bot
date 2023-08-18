@@ -5,6 +5,7 @@ from typing import Optional
 from sqlalchemy import desc, and_
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.elements import UnaryExpression
 from sqlalchemy.sql.functions import count
 from sqlmodel import select
 
@@ -32,13 +33,14 @@ class UserRepository:
                         active_user: User,
                         *,
                         offset: int = 0,
-                        limit: int = 5) -> list[User]:
+                        limit: int = 5,
+                        order: UnaryExpression = desc(User.created_date)) -> list[User]:
         if active_user.role != Role.ADMINISTRATOR:
             raise ToDoBotError("Only the administrator can retrieve users", ToDoBotErrorCode.USER_NOT_SPECIFIED)
 
         result: Result = await self.session.execute(
             select(User).where(User.telegram_user_id != active_user.telegram_user_id)
-            .order_by(desc(User.created_date), desc(User.telegram_user_id)).offset(offset).fetch(limit)
+            .order_by(order, desc(User.telegram_user_id)).offset(offset).fetch(limit)
         )
         return result.scalars().all()
 

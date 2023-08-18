@@ -6,7 +6,8 @@ from src.bot.keyboards.callback_factories import (
     LanguagesCallback,
     LanguageCallback,
     BackCallback,
-    UserAgreementCallback
+    UserAgreementCallback,
+    AboutCallback
 )
 from src.bot.structures.data_structure import BotItem, BotLanguage, BotBtnLanguageTitle, BotBtnTitle
 from src.lexicon.translator import Translator
@@ -19,7 +20,9 @@ async def create_settings_keyboard(translator: Translator) -> InlineKeyboardMark
                      InlineKeyboardButton(text=await translator.translate(BotBtnTitle.USER_AGREEMENT),
                                           callback_data=UserAgreementCallback().pack()),
                      InlineKeyboardButton(text=await translator.translate(BotBtnTitle.BACK),
-                                          callback_data=BackCallback(where_from=BotItem.MAIN).pack())], width=2)
+                                          callback_data=BackCallback(where_from=BotItem.MAIN).pack()),
+                     InlineKeyboardButton(text=await translator.translate(BotBtnTitle.ABOUT),
+                                          callback_data=AboutCallback().pack())], width=2)
     return kb_builder.as_markup()
 
 

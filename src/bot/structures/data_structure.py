@@ -58,6 +58,7 @@ class BotItem(StrEnum):
     BACK = "back"
     CANCEL = "cancel"
     LANGUAGE = "language"
+    ABOUT = "about"
 
 
 class BotLanguage(StrEnum):
@@ -88,6 +89,7 @@ class BotBtnTitle(StrEnum):
 
     UPDATE_LIST = "btn_update_list_title"
     SETTINGS = "btn_settings_title"
+    ABOUT = "btn_about_title"
     DELETE_ALL = "btn_delete_all_title"
     SAVE = "btn_save_title"
     APPLY = "btn_apply_title"
@@ -128,6 +130,9 @@ class BotMessage(StrEnum):
 
     SETTINGS_TITLE = "settings_title"
     SETTINGS_LANGUAGES_TITLE = "settings_languages_title"
+
+    ABOUT_TITLE = "about_title"
+    ABOUT_DESCRIPTION = "about_description"
 
     ADMIN_PANEL_MESSAGE_TITLE = "admin_panel_message_title"
     ADMIN_PANEL_MESSAGE_ADMIN_DATA = "admin_panel_message_admin_data"

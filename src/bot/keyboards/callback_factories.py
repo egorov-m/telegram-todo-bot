@@ -122,6 +122,10 @@ class LanguageCallback(CallbackData, prefix=BotItem.LANGUAGE):
     language: str
 
 
+class AboutCallback(CallbackData, prefix=BotItem.ABOUT):
+    pass
+
+
 class UserAgreementCallback(CallbackData, prefix=BotItem.USER_AGREEMENT):
     pass
 

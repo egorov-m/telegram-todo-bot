@@ -34,7 +34,11 @@ async def btn_back(callback: CallbackQuery,
     data = callback.data.split(':')[1]
     match data:
         case BotItem.SETTINGS:
-            await btn_settings(callback, translator)
+            await btn_settings(callback,
+                               state,
+                               database=database,
+                               active_user=active_user,
+                               translator=translator)
         case BotItem.ADD_TASK:
             st: State = await state.get_state()
             match st:
