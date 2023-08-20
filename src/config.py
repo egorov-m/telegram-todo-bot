@@ -10,6 +10,9 @@ class Settings(BaseSettings):
 
     TELEGRAM_API_BOT_TOKEN: str = "token"
 
+    LIMIT_USERS_ON_PAGE: int = 5
+    COUNT_LIMITS_TASKS_STORAGE_USER = 20
+
     POSTGRES_HOST: str = "localhost"
     POSTGRES_PORT: str = "5432"
     POSTGRES_USER: str = "postgres"

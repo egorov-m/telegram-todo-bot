@@ -124,6 +124,9 @@ class BotMessage(StrEnum):
     ADD_TASK_ENTER_DESCRIPTION = "add_task_enter_description"
     ADD_TASK_CONFIRM = "add_task_confirm"
 
+    ADD_TASK_ERROR_TITLE = "add_task_error_title"
+    ADD_TASK_ERROR_DESCRIPTION = "add_task_error_description"
+
     DELETE_TASK_MESSAGE_TITLE = "delete_task_message_title"
     DELETE_TASK_MESSAGE_SUBTITLE = "delete_task_message_subtitle"
     DELETE_TASK_INFO_MESSAGE = "delete_task_info_message"

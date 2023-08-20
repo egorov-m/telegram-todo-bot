@@ -52,6 +52,9 @@ add_task_enter_title = Enter the title of the new task:
 add_task_enter_description = Enter the description of the new task:
 add_task_confirm = Save a new task?
 
+add_task_error_title = Adding a new task 🆕
+add_task_error_description = The { $limit } limit of available task storage has been reached. Addition is not available. You can delete old tasks and then add a new one, or you can edit existing tasks.
+
 delete_task_message_title = Deleting tasks ❌
 delete_task_message_subtitle = Press the buttons to select
 delete_task_info_message = Selected for deletion: { $count }

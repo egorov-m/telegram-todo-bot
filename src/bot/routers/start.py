@@ -7,6 +7,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
 from aiogram.types import CallbackQuery, Message
 
+from src.config import settings
 from src.db.models import Task
 from src.bot.structures.data_structure import BotMessage, BotItem
 from src.db import Database
@@ -140,7 +141,11 @@ async def start_page(event: Message | CallbackQuery,
     title: str = await translator.translate(BotMessage.TASK_LIST_TITLE)
     empty: str = await translator.translate(BotMessage.TASK_LIST_EMPTY_MESSAGE)
     kb = await create_main_keyboard(translator=translator, active_user=active_user, task_list_hash=current_list_hash)
-    text = task_list(tasks, title=title, empty_msg=empty)
+    text = task_list(tasks,
+                     current_count=len(tasks),
+                     count_limit=settings.COUNT_LIMITS_TASKS_STORAGE_USER,
+                     title=title,
+                     empty_msg=empty)
     await message.edit_text(text=text, reply_markup=kb)
 
 

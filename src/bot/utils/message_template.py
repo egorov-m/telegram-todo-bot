@@ -1,23 +1,37 @@
 """ File containing bot message templates """
 
-from typing import List
+from typing import List, Optional
 
 from src.bot.states.data import SortingStateData, SortDirectionKey
 from src.db.models.task import Task
 
 
-def task_list(tasks: List[Task], title: str | None = None, empty_msg: str | None = None) -> str:
+def task_list(tasks: List[Task],
+              *,
+              current_count: int,
+              count_limit: int = 20,
+              title: Optional[str] = None,
+              empty_msg: Optional[str] = None) -> str:
     message: str = ""
     if title:
-        message += f"<b>{title}</b>\n-------------------------\n\n"
+        message += f"{bold_text(title)}\n-------------------------\n"
+    if current_count < count_limit / 2:
+        count_icon = "🪫"
+    elif current_count == count_limit:
+        count_icon = "💯"
+    elif current_count > count_limit:
+        count_icon = "☠️"
+    else:
+        count_icon = "🔋"
+    message += bold_text(f"{count_icon} {current_count} / {count_limit}\n\n")
     if len(tasks) < 1:
         if empty_msg:
-            message += f"<i>{empty_msg}</i>"
+            message += italic_text(empty_msg)
     else:
         for task in tasks:
             message += f"{done_marker(task.is_done)} "
-            message += f"<b>{task.title}</b>\n"
-            message += f"        <i>{task.description}</i>\n"
+            message += f"{bold_text(task.title)}\n"
+            message += f"        {italic_text(task.description)}\n"
     return message
 
 

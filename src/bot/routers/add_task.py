@@ -4,6 +4,7 @@ from aiogram.filters.callback_data import CallbackQuery
 from aiogram.fsm.state import default_state, State
 from aiogram.fsm.context import FSMContext
 
+from src.config import settings
 from src.bot.routers.utils import edit_message, _is_no_valid_input
 from src.db.repository import TaskRepository
 from src.db import Database
@@ -32,12 +33,27 @@ async def btn_add_task(callback: CallbackQuery,
     """
     Handler for pressing the add task button
     """
+    repo: TaskRepository = database.task
+    current_count_tasks = await repo.get_count_tasks_for_user(active_user)
+    kb = await create_back_keyboard(translator=translator)
+    if current_count_tasks >= settings.COUNT_LIMITS_TASKS_STORAGE_USER:
+        msg: str = f"{bold_text(await translator.translate(BotMessage.ADD_TASK_ERROR_TITLE))}\n\n" \
+                   f"{italic_text(await translator.translate(BotMessage.ADD_TASK_ERROR_DESCRIPTION, limit=settings.COUNT_LIMITS_TASKS_STORAGE_USER))}"
+
+        await edit_message(callback.message,
+                           state,
+                           database=database,
+                           active_user=active_user,
+                           translator=translator,
+                           text=msg,
+                           kb=kb)
+        return
+
     await state.set_state(state=AddTaskStates.add_task_waiting_title_input)
     data = await state.get_data()
     msg: str = await _get_add_task_full_msg(AddTaskStates.add_task_waiting_title_input,
                                             translator=translator,
                                             data=data)
-    kb = await create_back_keyboard(translator=translator)
     message: Message = callback.message
     await state.update_data({AddTaskStateData.ADD_TASK_MESSAGE: message.json()})
     await edit_message(message,

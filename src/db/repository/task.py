@@ -70,10 +70,10 @@ class TaskRepository:
 
         return result.scalars().all()
 
-    async def get_tasks_for_user(self, user: User, is_existed: bool = True, is_done: bool | None = None) -> list[Task]:
+    async def get_tasks_for_user(self, user: User, is_existed: bool = True, is_done: Optional[bool] = None) -> list[Task]:
         return await self._get_tasks_for_user(user, Task, is_existed, is_done)
 
-    async def get_count_tasks_for_user(self, user: User, is_existed: bool = True, is_done: bool | None = None) -> int:
+    async def get_count_tasks_for_user(self, user: User, is_existed: bool = True, is_done: Optional[bool] = None) -> int:
         return (await self._get_tasks_for_user(user, func.count(Task.id), is_existed, is_done))[0]
 
     @menage_db_method(CommitMode.FLUSH)
@@ -104,7 +104,7 @@ class TaskRepository:
         return task
 
     @menage_db_method(CommitMode.FLUSH)
-    async def done_task(self, task_id: UUID, is_done: bool = True, active_telegram_user_id: int | None = None) -> Task:
+    async def done_task(self, task_id: UUID, is_done: bool = True, active_telegram_user_id: Optional[int] = None) -> Task:
         task: Task = await self.get_task(task_id)
         if active_telegram_user_id is not None:
             if task.creator_telegram_user_id != active_telegram_user_id:
@@ -120,7 +120,7 @@ class TaskRepository:
         )
 
     @menage_db_method(CommitMode.FLUSH)
-    async def delete_task(self, task_id: UUID, active_telegram_user_id: int | None = None) -> Task:
+    async def delete_task(self, task_id: UUID, active_telegram_user_id: Optional[int] = None) -> Task:
         task: Task = await self.get_task(task_id)
         if active_telegram_user_id is not None:
             if task.creator_telegram_user_id != active_telegram_user_id:
