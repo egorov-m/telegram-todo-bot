@@ -103,7 +103,7 @@ async def empty(callback: CallbackQuery):
     await callback.answer()
 
 
-# @base_router.errors()
+@base_router.errors()
 async def errors_bot_handler(event: ErrorEvent,
                              *,
                              translator: Translator):

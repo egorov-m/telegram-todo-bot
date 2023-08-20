@@ -2,6 +2,7 @@
 
 from typing import List
 
+from src.bot.states.data import SortingStateData, SortDirectionKey
 from src.db.models.task import Task
 
 
@@ -18,6 +19,28 @@ def task_list(tasks: List[Task], title: str | None = None, empty_msg: str | None
             message += f"<b>{task.title}</b>\n"
             message += f"        <i>{task.description}</i>\n"
     return message
+
+
+def get_text_sorting_button(date: SortingStateData, item: str, is_selected: bool = False):
+    text: str = ""
+    if is_selected:
+        if date["is_ascending"]:
+            text += "⏫"
+        else:
+            text += "⏬"
+    else:
+        text += "⏹"
+    text += item
+
+    return text
+
+
+def get_markers_for_sorting_direction_key() -> dict:
+    return {
+        SortDirectionKey.CREATED_DATE: "📅",
+        SortDirectionKey.TASKS: "📌",
+        SortDirectionKey.DONE: "✅"
+    }
 
 
 def deletion_marker(is_delete: bool):

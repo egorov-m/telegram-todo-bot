@@ -4,10 +4,12 @@ from aiogram import Router
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
 from aiogram.types import CallbackQuery
+from sqlalchemy.engine import Row
 
+from src.bot.states.data import SortingStateData, SortDirectionKey
 from src.db.repository import UserRepository
 from src.bot.keyboards.admin_kb import create_admin_keyboard, create_admin_users_keyboard
-from src.bot.routers.utils import edit_message
+from src.bot.routers.utils import edit_message, get_expression_sorting
 from src.bot.structures.data_structure import BotMessage
 from src.bot.utils.message_template import bold_text, italic_text
 from src.db.repository import TaskRepository
@@ -17,7 +19,8 @@ from src.lexicon import Translator
 from src.bot.keyboards.callback_factories import (
     AdminPanelCallback,
     AdminPanelUsersCallback,
-    AdminPanelUserChangeAccessCallback
+    AdminPanelUserChangeAccessCallback,
+    AdminPanelUsersChangeSortDirectionCallback
 )
 
 admin_panel_router = Router(name="admin_panel_router")
@@ -57,6 +60,27 @@ async def btn_admin_panel(callback: CallbackQuery,
                        kb=kb)
 
 
+@admin_panel_router.callback_query(AdminPanelUsersChangeSortDirectionCallback.filter(), default_state)
+async def btn_admin_panel_users_change_sort_direction(callback: CallbackQuery,
+                                                      state: FSMContext,
+                                                      *,
+                                                      database: Database,
+                                                      active_user: User,
+                                                      translator: Translator):
+    t = callback.data.split(":")
+    key = t[2]
+    is_ascending = t[3] == "True"
+    data = await state.get_data()
+    if data["key"] == key:
+        is_ascending = not is_ascending
+    await state.update_data(SortingStateData(key=key, is_ascending=is_ascending))
+    await btn_admin_panel_users(callback,
+                                state,
+                                database=database,
+                                active_user=active_user,
+                                translator=translator)
+
+
 @admin_panel_router.callback_query(AdminPanelUsersCallback.filter(), default_state)
 async def btn_admin_panel_users(callback: CallbackQuery,
                                 state: FSMContext,
@@ -68,16 +92,21 @@ async def btn_admin_panel_users(callback: CallbackQuery,
     count_users: int = await repo.get_count_users(active_user)
     count_pages: int = ceil(count_users / LIMIT_USERS_ON_PAGE)
     offset: int = int(callback.data.split(":")[1])
-    users: list[User] = await repo.get_users(active_user,
-                                             offset=offset,
-                                             limit=LIMIT_USERS_ON_PAGE)
+    data = await state.get_data()
+    if not data:
+        data: SortingStateData = SortingStateData(key=SortDirectionKey.CREATED_DATE, is_ascending=False)
+        await state.update_data(data)
 
+    users: list[Row] = await repo.get_users_with_more_info(active_user,
+                                                           offset=offset,
+                                                           limit=LIMIT_USERS_ON_PAGE,
+                                                           order=get_expression_sorting(data))
     msg: str = f"{bold_text(await translator.translate(BotMessage.ADMIN_PANEL_USERS_MESSAGE_TITLE))}\n" \
                f"{italic_text(await translator.translate(BotMessage.ADMIN_PANEL_USERS_MESSAGE_SUBTITLE))}\n\n" \
                f"{await translator.translate(BotMessage.ADMIN_PANEL_USERS_MESSAGE_USER)}"
     kb = await create_admin_users_keyboard(translator,
                                            users=users,
-                                           task_repository=database.task,
+                                           sorting_state_data=data,
                                            offset=offset,
                                            limit=LIMIT_USERS_ON_PAGE,
                                            count_pages=count_pages)

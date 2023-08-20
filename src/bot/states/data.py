@@ -27,3 +27,14 @@ class EditTask(DoneTask):
 class EditTaskStateData(TypedDict):
     task: EditTask
     edit_task_message: Message
+
+
+class SortDirectionKey(StrEnum):
+    CREATED_DATE = "created_date"
+    TASKS = "tasks"
+    DONE = "done"
+
+
+class SortingStateData(TypedDict):
+    key: SortDirectionKey
+    is_ascending: bool

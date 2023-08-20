@@ -22,6 +22,14 @@ class LoggerType(StrEnum):
     BOT_ERROR_LOGGER = "bot_error_logger"
 
 
+class BotCmd(StrEnum):
+    CMD_START_TITLE = "cmd_start_title"
+    CMD_START_DESCRIPTION = "cmd_start_description"
+
+    CMD_HELP_TITLE = "cmd_help_title"
+    CMD_HELP_DESCRIPTION = "cmd_help_description"
+
+
 class BotItem(StrEnum):
     MAIN = "main"
     USER_AGREEMENT = "user_agreement"
@@ -51,6 +59,7 @@ class BotItem(StrEnum):
 
     ADMIN_PANEL = "admin_panel"
     ADMIN_PANEL_USERS = "admin_panel_users"
+    ADMIN_PANEL_USERS_CHANGE_SORT_DIRECTION = "admin_panel_users_change_sort_direction"
     ADMIN_PANEL_USER_ACCESS = "admin_panel_user_access"
 
     SETTINGS_LANGUAGES = "settings_languages"
@@ -104,6 +113,9 @@ class BotBtnTitle(StrEnum):
 
 
 class BotMessage(StrEnum):
+    HELP_TITLE = "help_title"
+    HELP_MESSAGE = "help_message"
+
     TASK_LIST_TITLE = "task_list_title"
     TASK_LIST_EMPTY_MESSAGE = "task_list_empty_message"
 

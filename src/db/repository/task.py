@@ -53,7 +53,7 @@ class TaskRepository:
                                   user: User,
                                   selection: type[Task],
                                   is_existed: bool = True,
-                                  is_done: bool | None = None) -> list[Task]:
+                                  is_done: Optional[bool] = None) -> list[Task]:
         conditions = [Task.creator_telegram_user_id == user.telegram_user_id]
         if is_existed:
             conditions.append(Task.is_exist == True)
@@ -61,9 +61,11 @@ class TaskRepository:
             conditions.append(Task.is_done == is_done)
 
         where = and_(*conditions)
-        st = select(selection).where(where)
         if isinstance(selection, type(Task)):
-            st.order_by(Task.title)
+            st = select(selection).where(where).order_by(Task.created_date)
+        else:
+            st = select(selection).where(where)
+
         result: Result = await self.session.execute(st)
 
         return result.scalars().all()

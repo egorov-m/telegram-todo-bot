@@ -39,6 +39,9 @@ btn_language_en_US_title = English 🇺🇸
 btn_language_ru_RU_title = Russian 🇷🇺
 
 # Messages
+help_title = Do you need to keep a to-do list?
+help_message = This bot will help you with that. The main control is intuitive, done with buttons. To access the main menu, run the /start command.
+
 task_list_title = TODO LIST 📝
 task_list_empty_message = You don't have tasks yet.
 

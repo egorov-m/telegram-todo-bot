@@ -8,7 +8,8 @@ from aiogram.fsm.state import default_state
 from aiogram.fsm.storage.redis import RedisStorage
 from redis.asyncio import Redis
 
-from db.database import create_async_engine, get_session_maker
+from src.bot.menu.menu import set_main_menu
+from src.db.database import create_async_engine, get_session_maker
 from src.config import settings
 from src.logconfig import setup_logging
 from src.lexicon.translator import Translator
@@ -39,9 +40,8 @@ async def main() -> None:
     sessionmaker = get_session_maker(async_engine)
 
     await bot.delete_webhook(drop_pending_updates=True)
+    dp.startup.register(set_main_menu)
     await dp.start_polling(bot, **TransferData(dispatcher=dp, pool=sessionmaker, translator=Translator()))
-
-    # await set_main_menu(bot, lexicon)
 
 
 if __name__ == '__main__':

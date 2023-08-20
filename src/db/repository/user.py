@@ -6,9 +6,10 @@ from sqlalchemy import desc, and_
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.elements import UnaryExpression
-from sqlalchemy.sql.functions import count
+from sqlalchemy.sql.functions import count, func
 from sqlmodel import select
 
+from src.db.models import Task
 from src.bot.structures.role import Role
 from src.db.models import User
 from src.db.utils import menage_db_method, CommitMode
@@ -43,6 +44,35 @@ class UserRepository:
             .order_by(order, desc(User.telegram_user_id)).offset(offset).fetch(limit)
         )
         return result.scalars().all()
+
+    async def get_users_with_more_info(self,
+                                       active_user: User,
+                                       *,
+                                       offset: int = 0,
+                                       limit: int = 5,
+                                       order: UnaryExpression = desc(User.created_date)) -> list:
+        if active_user.role != Role.ADMINISTRATOR:
+            raise ToDoBotError("Only the administrator can retrieve users", ToDoBotErrorCode.USER_NOT_SPECIFIED)
+
+        result: Result = await self.session.execute(
+            select(User.enabled,
+                   User.username,
+                   User.telegram_user_id,
+                   User.first_name,
+                   User.last_name,
+                   func.count(Task.id),
+                   func.count(Task.id).filter(Task.is_done == True))
+            .join(Task, Task.creator_telegram_user_id == User.telegram_user_id, full=True)
+            .where(User.telegram_user_id != active_user.telegram_user_id)
+            .group_by(User.telegram_user_id,
+                      User.enabled,
+                      User.username,
+                      User.first_name,
+                      User.last_name)
+            .order_by(order, desc(User.telegram_user_id)).offset(offset).fetch(limit)
+        )
+
+        return result.all()
 
     async def get_count_users(self, active_user: Optional[User] = None) -> int:
         conditions = []
@@ -87,8 +117,8 @@ class UserRepository:
                           current_language: Optional[str] = None,
                           enabled: Optional[bool] = None,
                           role: Optional[Role] = None,
-                          last_activity_date: Optional[datetime] = None,
-                          user_agreement_acceptance_date: Optional[datetime] = datetime.utcnow()) -> User:
+                          last_activity_date: Optional[datetime] = datetime.utcnow(),
+                          user_agreement_acceptance_date: Optional[datetime] = None) -> User:
         user: User = await self.get_user(telegram_user_id)
 
         if username is not None:

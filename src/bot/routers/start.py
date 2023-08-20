@@ -24,7 +24,7 @@ from src.bot.utils.message_template import task_list, bold_text, italic_text
 start_router = Router(name="start_router")
 
 
-@start_router.message(Command(*translate_list_all("cmd_start")), default_state)
+@start_router.message(Command(*translate_list_all("cmd_start")))
 async def cmd_start(message: Message, translator: Translator):
     """
     Start command handler
