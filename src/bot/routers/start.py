@@ -8,7 +8,6 @@ from aiogram.fsm.state import default_state
 from aiogram.types import CallbackQuery, Message
 
 from src.config import settings
-from src.db.models import Task
 from src.bot.structures.data_structure import BotMessage, BotItem
 from src.db import Database
 from src.db.models import User
@@ -132,7 +131,7 @@ async def start_page(event: Message | CallbackQuery,
     tasks = await database.task.get_tasks_for_user(active_user)
 
     # Checking by hash whether the list needs to be updated
-    current_list_hash: str = _get_list_hash(tasks)
+    current_list_hash: str = get_list_hash(tasks)
     if new_list_hash == current_list_hash:
         if callback is not None:
             await callback.answer()
@@ -149,7 +148,7 @@ async def start_page(event: Message | CallbackQuery,
     await message.edit_text(text=text, reply_markup=kb)
 
 
-def _get_list_hash(tasks: list[Task]) -> str:
+def get_list_hash(li: list) -> str:
     sha1_hash = sha1()
-    sha1_hash.update(str(tasks).encode("utf-8"))
+    sha1_hash.update(str(li).encode("utf-8"))
     return sha1_hash.hexdigest()

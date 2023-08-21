@@ -27,6 +27,7 @@ btn_about_title = About ℹ️
 
 btn_admin_panel = Admin panel 🔑
 btn_admin_panel_users = Users 👤
+btn_admin_panel_users_reset_search = Reset search 🔎 ({ $text })
 
 btn_save_title = Save ✅
 btn_apply_title = Apply ☑️
@@ -93,7 +94,8 @@ admin_panel_message_admin_data = Id: { $id }
                                  Tasks all time: { $task_all_time }
                                  You've all done: { $you_done }
 admin_panel_users_message_title = Users 👤
-admin_panel_users_message_subtitle = Press the buttons to adjust user access
+admin_panel_users_message_subtitle = Press the buttons to adjust user access.
+                                     Send text messages to perform searches on user data.
 admin_panel_users_message_user = access | username | id | first_name | last_name | tasks | done
 
 user_agreement_accepted_message = User agreement accepted ✅

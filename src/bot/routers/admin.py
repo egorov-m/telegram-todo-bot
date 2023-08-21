@@ -1,11 +1,13 @@
 from math import ceil
 
 from aiogram import Router
+from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, Message
 from sqlalchemy.engine import Row
 
+from src.bot.states.state import AdminPanelStates
 from src.config import settings
 from src.bot.states.data import SortingStateData, SortDirectionKey
 from src.db.repository import UserRepository
@@ -21,7 +23,8 @@ from src.bot.keyboards.callback_factories import (
     AdminPanelCallback,
     AdminPanelUsersCallback,
     AdminPanelUserChangeAccessCallback,
-    AdminPanelUsersChangeSortDirectionCallback
+    AdminPanelUsersChangeSortDirectionCallback,
+    AdminPanelUsersResetSearchCallback
 )
 
 admin_panel_router = Router(name="admin_panel_router")
@@ -34,6 +37,7 @@ async def btn_admin_panel(callback: CallbackQuery,
                           database: Database,
                           active_user: User,
                           translator: Translator):
+    await state.set_state(AdminPanelStates.open_admin_panel)
     repo: TaskRepository = database.task
     username = active_user.username
     last_name = active_user.last_name
@@ -59,7 +63,7 @@ async def btn_admin_panel(callback: CallbackQuery,
                        kb=kb)
 
 
-@admin_panel_router.callback_query(AdminPanelUsersChangeSortDirectionCallback.filter(), default_state)
+@admin_panel_router.callback_query(AdminPanelUsersChangeSortDirectionCallback.filter(), AdminPanelStates.open_users_panel)
 async def btn_admin_panel_users_change_sort_direction(callback: CallbackQuery,
                                                       state: FSMContext,
                                                       *,
@@ -71,8 +75,10 @@ async def btn_admin_panel_users_change_sort_direction(callback: CallbackQuery,
     is_ascending = t[3] == "True"
     data = await state.get_data()
     if data["key"] == key:
-        is_ascending = not is_ascending
-    await state.update_data(SortingStateData(key=key, is_ascending=is_ascending))
+        data["is_ascending"] = not is_ascending
+    else:
+        data["key"] = key
+    await state.update_data(data)
     await btn_admin_panel_users(callback,
                                 state,
                                 database=database,
@@ -80,23 +86,98 @@ async def btn_admin_panel_users_change_sort_direction(callback: CallbackQuery,
                                 translator=translator)
 
 
-@admin_panel_router.callback_query(AdminPanelUsersCallback.filter(), default_state)
+@admin_panel_router.message(AdminPanelStates.open_users_panel)
+async def input_search_text(message: Message,
+                            state: FSMContext,
+                            *,
+                            database: Database,
+                            active_user: User,
+                            translator: Translator):
+    search_text = message.text
+    data: SortingStateData = await state.get_data()
+    data["search_text"] = search_text
+    await state.update_data(data)
+    await get_admin_panel_users(Message.parse_raw(data["message"]),
+                                state,
+                                offset=data["offset"],
+                                data=data,
+                                database=database,
+                                active_user=active_user,
+                                translator=translator)
+
+
+@admin_panel_router.callback_query(
+    AdminPanelUsersCallback.filter(),
+    StateFilter(AdminPanelStates.open_admin_panel,
+                AdminPanelStates.open_users_panel)
+)
 async def btn_admin_panel_users(callback: CallbackQuery,
                                 state: FSMContext,
                                 *,
                                 database: Database,
                                 active_user: User,
                                 translator: Translator):
-    repo: UserRepository = database.user
-    count_users: int = await repo.get_count_users(active_user)
-    count_pages: int = ceil(count_users / settings.LIMIT_USERS_ON_PAGE)
     offset: int = int(callback.data.split(":")[1])
+    message: Message = callback.message
+    await state.set_state(AdminPanelStates.open_users_panel)
     data = await state.get_data()
     if not data:
-        data: SortingStateData = SortingStateData(key=SortDirectionKey.CREATED_DATE, is_ascending=False)
+        data: SortingStateData = SortingStateData(key=SortDirectionKey.CREATED_DATE,
+                                                  is_ascending=False,
+                                                  search_text=None,
+                                                  message=message.json(),
+                                                  offset=offset)
+        await state.update_data(data)
+    else:
+        data["offset"] = offset
         await state.update_data(data)
 
+    await get_admin_panel_users(message,
+                                state,
+                                offset=offset,
+                                data=data,
+                                database=database,
+                                active_user=active_user,
+                                translator=translator)
+
+
+@admin_panel_router.callback_query(
+    AdminPanelUsersResetSearchCallback.filter(),
+    StateFilter(AdminPanelStates.open_admin_panel,
+                AdminPanelStates.open_users_panel)
+)
+async def reset_search(callback: CallbackQuery,
+                       state: FSMContext,
+                       *,
+                       database: Database,
+                       active_user: User,
+                       translator: Translator):
+    data: SortingStateData = await state.get_data()
+    data["search_text"] = None
+    await state.update_data(data)
+    await get_admin_panel_users(callback.message,
+                                state,
+                                offset=data["offset"],
+                                data=data,
+                                database=database,
+                                active_user=active_user,
+                                translator=translator)
+
+
+async def get_admin_panel_users(message: Message,
+                                state: FSMContext,
+                                *,
+                                offset: int,
+                                data: SortingStateData,
+                                database: Database,
+                                active_user: User,
+                                translator: Translator):
+    repo: UserRepository = database.user
+    count_users: int = await repo.get_count_users(active_user, search_text=data["search_text"])
+    count_pages: int = ceil(count_users / settings.LIMIT_USERS_ON_PAGE)
+
     users: list[Row] = await repo.get_users_with_more_info(active_user,
+                                                           search_text=data["search_text"],
                                                            offset=offset,
                                                            limit=settings.LIMIT_USERS_ON_PAGE,
                                                            order=get_expression_sorting(data))
@@ -105,11 +186,12 @@ async def btn_admin_panel_users(callback: CallbackQuery,
                f"{await translator.translate(BotMessage.ADMIN_PANEL_USERS_MESSAGE_USER)}"
     kb = await create_admin_users_keyboard(translator,
                                            users=users,
+                                           search_text=data["search_text"],
                                            sorting_state_data=data,
                                            offset=offset,
                                            limit=settings.LIMIT_USERS_ON_PAGE,
                                            count_pages=count_pages)
-    await edit_message(callback.message,
+    await edit_message(message,
                        state,
                        database=database,
                        active_user=active_user,
@@ -118,7 +200,7 @@ async def btn_admin_panel_users(callback: CallbackQuery,
                        kb=kb)
 
 
-@admin_panel_router.callback_query(AdminPanelUserChangeAccessCallback.filter(), default_state)
+@admin_panel_router.callback_query(AdminPanelUserChangeAccessCallback.filter(), AdminPanelStates.open_users_panel)
 async def btn_admin_panel_user_change_access(callback: CallbackQuery,
                                              state: FSMContext,
                                              *,

@@ -59,6 +59,7 @@ class BotItem(StrEnum):
 
     ADMIN_PANEL = "admin_panel"
     ADMIN_PANEL_USERS = "admin_panel_users"
+    ADMIN_PANEL_USERS_RESET_SEARCH = "admin_panel_users_reset_search"
     ADMIN_PANEL_USERS_CHANGE_SORT_DIRECTION = "admin_panel_users_change_sort_direction"
     ADMIN_PANEL_USER_ACCESS = "admin_panel_user_access"
 
@@ -110,6 +111,7 @@ class BotBtnTitle(StrEnum):
 
     ADMIN_PANEL = "btn_admin_panel"
     ADMIN_PANEL_USERS = "btn_admin_panel_users"
+    ADMIN_PANEL_USERS_RESET_SEARCH = "btn_admin_panel_users_reset_search"
 
 
 class BotMessage(StrEnum):

@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from bot.states.data import SortDirectionKey
+from src.bot.states.data import SortDirectionKey
 from src.bot.structures.data_structure import BotItem
 
 from aiogram.filters.callback_data import CallbackData
@@ -90,6 +90,10 @@ class AdminPanelCallback(CallbackData, prefix=BotItem.ADMIN_PANEL):
 
 class AdminPanelUsersCallback(CallbackData, prefix=BotItem.ADMIN_PANEL_USERS):
     offset: int = 0
+
+
+class AdminPanelUsersResetSearchCallback(CallbackData, prefix=BotItem.ADMIN_PANEL_USERS_RESET_SEARCH):
+    pass
 
 
 class AdminPanelUsersChangeSortDirectionCallback(AdminPanelUsersCallback, prefix=BotItem.ADMIN_PANEL_USERS_CHANGE_SORT_DIRECTION):

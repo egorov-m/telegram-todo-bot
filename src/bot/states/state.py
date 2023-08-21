@@ -24,6 +24,11 @@ class EditTaskStates(StatesGroup):
     edit_task_waiting_description_input = State()
 
 
+class AdminPanelStates(StatesGroup):
+    open_admin_panel = State()
+    open_users_panel = State()
+
+
 class BotStates(StatesGroup):
     current_language = State()
 

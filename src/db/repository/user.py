@@ -2,7 +2,7 @@ import re
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import desc, and_
+from sqlalchemy import desc, and_, or_, cast, String
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.elements import UnaryExpression
@@ -48,11 +48,20 @@ class UserRepository:
     async def get_users_with_more_info(self,
                                        active_user: User,
                                        *,
+                                       search_text: Optional[str] = None,
                                        offset: int = 0,
                                        limit: int = 5,
                                        order: UnaryExpression = desc(User.created_date)) -> list:
         if active_user.role != Role.ADMINISTRATOR:
             raise ToDoBotError("Only the administrator can retrieve users", ToDoBotErrorCode.USER_NOT_SPECIFIED)
+
+        conditions = [User.telegram_user_id != active_user.telegram_user_id]
+        if search_text is not None:
+            text: str = f"%{search_text}%"
+            conditions.append(or_(cast(User.telegram_user_id, String).ilike(text),
+                                  User.username.ilike(text),
+                                  User.first_name.ilike(text),
+                                  User.last_name.ilike(text)))
 
         result: Result = await self.session.execute(
             select(User.enabled,
@@ -63,7 +72,7 @@ class UserRepository:
                    func.count(Task.id),
                    func.count(Task.id).filter(Task.is_done == True))
             .join(Task, Task.creator_telegram_user_id == User.telegram_user_id, full=True)
-            .where(User.telegram_user_id != active_user.telegram_user_id)
+            .where(and_(*conditions))
             .group_by(User.telegram_user_id,
                       User.enabled,
                       User.username,
@@ -74,10 +83,16 @@ class UserRepository:
 
         return result.all()
 
-    async def get_count_users(self, active_user: Optional[User] = None) -> int:
+    async def get_count_users(self, active_user: Optional[User] = None, search_text: Optional[str] = None) -> int:
         conditions = []
         if active_user is not None:
             conditions.append(User.telegram_user_id != active_user.telegram_user_id)
+            if search_text is not None:
+                text: str = f"%{search_text}%"
+                conditions.append(or_(cast(User.telegram_user_id, String).ilike(text),
+                                      User.username.ilike(text),
+                                      User.first_name.ilike(text),
+                                      User.last_name.ilike(text)))
         result: Result = await self.session.execute(
             select(count(User.telegram_user_id)).where(and_(*conditions))
         )

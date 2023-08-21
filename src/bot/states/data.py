@@ -38,3 +38,7 @@ class SortDirectionKey(StrEnum):
 class SortingStateData(TypedDict):
     key: SortDirectionKey
     is_ascending: bool
+    search_text: str
+    message: str
+    offset: int
+    list_hash: str
