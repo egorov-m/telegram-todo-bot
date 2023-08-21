@@ -9,6 +9,7 @@ class ToDoBotErrorCode(IntEnum):
            0-1000: general errors
         3001-4000: task errors
         4001-5000: user errors
+        5001-6000: event errors
     """
 
     # 0-1000: general errors
@@ -23,6 +24,9 @@ class ToDoBotErrorCode(IntEnum):
     USER_DISABLED = 4002
     USER_NOT_FOUND = 4003
     USER_HAS_NOT_AGREEMENT_ACCEPTED = 4004
+
+    # 5001-6000: event errors
+    EVENT_NOT_FOUND = 5001
 
 
 class ToDoBotError(Exception):

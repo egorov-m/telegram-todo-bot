@@ -1,9 +1,11 @@
+from typing import Optional
+
 from sqlalchemy.engine.url import URL
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine as _create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from src.db.repository import UserRepository, TaskRepository
+from src.db.repository import EventRepository, UserRepository, TaskRepository
 
 
 def create_async_engine(url: URL | str, echo: bool = False) -> AsyncEngine:
@@ -26,6 +28,7 @@ class Database:
     can be used in the handlers or any others bot-side functions
     """
 
+    event: EventRepository
     user: UserRepository
     task: TaskRepository
 
@@ -33,9 +36,11 @@ class Database:
 
     def __init__(self,
                  session: AsyncSession,
-                 user: UserRepository = None,
-                 task: TaskRepository = None):
+                 event: Optional[EventRepository] = None,
+                 user: Optional[UserRepository] = None,
+                 task: Optional[TaskRepository] = None):
 
         self.session = session
+        self.event = event or EventRepository(session=session)
         self.user = user or UserRepository(session=session)
         self.task = task or TaskRepository(session=session)

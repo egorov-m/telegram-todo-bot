@@ -12,7 +12,7 @@ from sqlmodel import select
 from src.db.models import Task
 from src.bot.structures.role import Role
 from src.db.models import User
-from src.db.utils import menage_db_method, CommitMode
+from src.db.utils import menage_db_method, CommitMode, manage_data_protection_method
 from src.exceptions import ToDoBotError, ToDoBotErrorCode
 
 
@@ -30,14 +30,13 @@ class UserRepository:
 
         return user
 
+    @manage_data_protection_method(Role.ADMINISTRATOR)
     async def get_users(self,
                         active_user: User,
                         *,
                         offset: int = 0,
                         limit: int = 5,
                         order: UnaryExpression = desc(User.created_date)) -> list[User]:
-        if active_user.role != Role.ADMINISTRATOR:
-            raise ToDoBotError("Only the administrator can retrieve users", ToDoBotErrorCode.USER_NOT_SPECIFIED)
 
         result: Result = await self.session.execute(
             select(User).where(User.telegram_user_id != active_user.telegram_user_id)
@@ -45,6 +44,7 @@ class UserRepository:
         )
         return result.scalars().all()
 
+    @manage_data_protection_method(Role.ADMINISTRATOR)
     async def get_users_with_more_info(self,
                                        active_user: User,
                                        *,
@@ -52,8 +52,6 @@ class UserRepository:
                                        offset: int = 0,
                                        limit: int = 5,
                                        order: UnaryExpression = desc(User.created_date)) -> list:
-        if active_user.role != Role.ADMINISTRATOR:
-            raise ToDoBotError("Only the administrator can retrieve users", ToDoBotErrorCode.USER_NOT_SPECIFIED)
 
         conditions = [User.telegram_user_id != active_user.telegram_user_id]
         if search_text is not None:
@@ -83,16 +81,23 @@ class UserRepository:
 
         return result.all()
 
-    async def get_count_users(self, active_user: Optional[User] = None, search_text: Optional[str] = None) -> int:
+    @manage_data_protection_method(Role.ADMINISTRATOR)
+    async def get_count_users(self,
+                              active_user: User,
+                              *,
+                              is_consider_active_user: bool = False,
+                              search_text: Optional[str] = None) -> int:
         conditions = []
-        if active_user is not None:
+        if not is_consider_active_user:
             conditions.append(User.telegram_user_id != active_user.telegram_user_id)
-            if search_text is not None:
-                text: str = f"%{search_text}%"
-                conditions.append(or_(cast(User.telegram_user_id, String).ilike(text),
-                                      User.username.ilike(text),
-                                      User.first_name.ilike(text),
-                                      User.last_name.ilike(text)))
+
+        if search_text is not None:
+            text: str = f"%{search_text}%"
+            conditions.append(or_(cast(User.telegram_user_id, String).ilike(text),
+                                  User.username.ilike(text),
+                                  User.first_name.ilike(text),
+                                  User.last_name.ilike(text)))
+
         result: Result = await self.session.execute(
             select(count(User.telegram_user_id)).where(and_(*conditions))
         )

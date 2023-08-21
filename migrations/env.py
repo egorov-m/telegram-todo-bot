@@ -21,6 +21,7 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # Models import
+from src.db.models.event import Event
 from src.db.models.user import User
 from src.db.models.task import Task
 
