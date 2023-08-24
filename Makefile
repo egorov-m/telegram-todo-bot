@@ -16,35 +16,44 @@ help:
 .PHONY: build
 build:
 		make export-dep
-		docker-compose -f docker-compose.yaml build
+		docker-compose -f docker-compose-local.yaml build
 
 .PHONY: up
 up:
 		make export-dep
-		docker-compose -f docker-compose.yaml up -d
+		docker-compose -f docker-compose-local.yaml up -d
 
 .PHONY: start
 start:
 		make export-dep
-		docker-compose -f docker-compose.yaml start
+		docker-compose -f docker-compose-local.yaml start
 
 .PHONY: down
 down:
-		docker-compose -f docker-compose.yaml down
+		docker-compose -f docker-compose-local.yaml down && docker network prune --force
 
 .PHONY: destroy
 destroy:
-		docker-compose -f docker-compose.yaml down -v
+		docker-compose -f docker-compose-local.yaml down -v
 
 .PHONY: stop
 stop:
-		docker-compose -f docker-compose.yaml stop
+		docker-compose -f docker-compose-local.yaml stop
 
 .PHONY: restart
 restart:
-		docker-compose -f docker-compose.yaml stop
-		docker-compose -f docker-compose.yaml up -d
+		docker-compose -f docker-compose-local.yaml stop
+		docker-compose -f docker-compose-local.yaml up -d
 
 .PHONY: export-dep
 export-dep:
-		poetry export --without-hashes --without dev -f requirements.txt -o ./build/requirements.txt
+		poetry export --without-hashes --without dev -f requirements.txt -o ./requirements.txt
+
+# Alembic
+.PHONY: generate
+generate:
+	poetry run alembic revision --m="$(m)" --autogenerate
+
+.PHONY: migrate
+migrate:
+	poetry run alembic upgrade head

@@ -1,18 +1,14 @@
-from typing import Union
+from typing import Optional
 
 from sqlalchemy.engine.url import URL
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine as _create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from .repository import (
-    UserRepo,
-    TaskRepo,
-    TelegramUserRepo
-)
+from src.db.repository import EventRepository, UserRepository, TaskRepository
 
 
-def create_async_engine(url: Union[URL, str], echo: bool = False) -> AsyncEngine:
+def create_async_engine(url: URL | str, echo: bool = False) -> AsyncEngine:
     """
     Creating an async database engine
     :param url Address for connection in the database
@@ -22,7 +18,7 @@ def create_async_engine(url: Union[URL, str], echo: bool = False) -> AsyncEngine
     return _create_async_engine(url=url, echo=echo, encoding='utf-8', pool_pre_ping=True)
 
 
-def get_session_maker(engine: AsyncEngine) -> sessionmaker:
+def get_session_maker(engine: AsyncEngine | None = None) -> sessionmaker:
     return sessionmaker(engine, class_=AsyncSession)
 
 
@@ -32,20 +28,19 @@ class Database:
     can be used in the handlers or any others bot-side functions
     """
 
-    user: UserRepo
-    task: TaskRepo
-    telegram_user: TelegramUserRepo
+    event: EventRepository
+    user: UserRepository
+    task: TaskRepository
 
     session: AsyncSession
 
     def __init__(self,
                  session: AsyncSession,
-                 user: UserRepo = None,
-                 task: TaskRepo = None,
-                 telegram_user: TelegramUserRepo = None
-                 ):
+                 event: Optional[EventRepository] = None,
+                 user: Optional[UserRepository] = None,
+                 task: Optional[TaskRepository] = None):
 
         self.session = session
-        self.user = user or UserRepo(session=session)
-        self.task = task or TaskRepo(session=session)
-        self.telegram_user = telegram_user or TelegramUserRepo(session=session)
+        self.event = event or EventRepository(session=session)
+        self.user = user or UserRepository(session=session)
+        self.task = task or TaskRepository(session=session)

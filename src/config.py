@@ -1,64 +1,48 @@
 """This file represents configurations from files and environment"""
-from dataclasses import dataclass
-from environs import Env
+
+from functools import lru_cache
+
+from pydantic import BaseSettings
 
 
-@dataclass
-class DbPostgresConfig:
-    """Postgres database connection variables"""
+class Settings(BaseSettings):
+    PROJECT_NAME: str = "Telegram ToDo Bot"
 
-    db_name: str
-    db_host: str
-    db_port: str
-    db_user: str
-    db_password: str
+    TELEGRAM_API_BOT_TOKEN: str = "token"
 
-    driver: str = "asyncpg"
-    database_system: str = "postgresql"
+    LIMIT_USERS_ON_PAGE: int = 5
+    COUNT_LIMITS_TASKS_STORAGE_USER = 20
 
-    def get_url(self) -> str:
-        return f"{self.database_system}+{self.driver}://{self.db_user}:{self.db_password}@{self.db_host}/{self.db_name}"
+    POSTGRES_HOST: str = "localhost"
+    POSTGRES_PORT: str = "5432"
+    POSTGRES_USER: str = "postgres"
+    POSTGRES_PASSWORD: str = "secret"
+    POSTGRES_DB: str = "postgres"
 
+    POSTGRES_DATABASE_SYSTEM: str = "postgresql"
+    POSTGRES_DRIVER: str = "asyncpg"
 
-@dataclass
-class DbRedisConfig:
-    """Redis connection variables"""
+    REDIS_HOST: str = "localhost"
+    REDIS_PORT: str = "6379"
+    REDIS_DB: str = "0"
 
-    db_name: str
-    db_host: str
-    db_port: str
-    db_user: str
-    db_password: str
+    def get_postgres_url(self):
+        return f"{self.POSTGRES_DATABASE_SYSTEM}+{self.POSTGRES_DRIVER}://" \
+               f"{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@" \
+               f"{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
+    def get_redis_url(self):
+        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
 
-@dataclass
-class Bot:
-    """Bot configuration"""
-
-    token: str
-
-
-@dataclass
-class Config:
-    """All in one configuration's class"""
-
-    bot: Bot
-    dbPostgres: DbPostgresConfig
-    dbRedis: DbRedisConfig
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+        case_sensitive = False
 
 
-def load_config(path: str | None = None) -> Config:
-    env: Env = Env()
-    env.read_env(path)
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()
 
-    return Config(bot=Bot(token=env('HTTP_API_BOT_TOKEN')),
-                  dbPostgres=DbPostgresConfig(db_name=env('POSTGRES_DB_NAME'),
-                                              db_host=env('POSTGRES_DB_HOST'),
-                                              db_port=env('POSTGRES_DB_PORT'),
-                                              db_user=env('POSTGRES_DB_USER'),
-                                              db_password=env('POSTGRES_DB_PASSWORD')),
-                  dbRedis=DbRedisConfig(db_name=env('REDIS_DB_NAME'),
-                                        db_host=env('REDIS_DB_HOST'),
-                                        db_port=env('REDIS_DB_PORT'),
-                                        db_user=env('REDIS_DB_USER'),
-                                        db_password=env('REDIS_DB_PASSWORD')))
+
+settings: Settings = get_settings()

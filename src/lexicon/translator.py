@@ -2,7 +2,6 @@
 
 from re import split
 import logging as log
-from typing import List, Dict, Any, Union
 
 from babel.core import Locale
 from fluent.runtime import FluentLocalization, FluentResourceLoader
@@ -11,9 +10,9 @@ from fluent.runtime import FluentLocalization, FluentResourceLoader
 logger = log.getLogger('translator_logger')
 
 default_locale: str = 'en_US'
-locales: List[str] = [default_locale, 'ru_RU']
+locales: list[str] = [default_locale, 'ru_RU']
 _loader: FluentResourceLoader = FluentResourceLoader('./src/lexicon/l10n/{locale}')
-_localizations: Dict[Locale, FluentLocalization] = {}
+_localizations: dict[Locale, FluentLocalization] = {}
 _localization_all: FluentLocalization = FluentLocalization(['all'], ['cmd.ftl'], _loader)
 
 
@@ -46,15 +45,15 @@ class Translator:
 
         return _localizations[locale]
 
-    async def translate(self, msg_id: str, args: Union[Dict[str, Any], None] = None) -> str:
-        return self.localization.format_value(msg_id, args)
+    async def translate(self, msg_id: str, **kwargs: dict[str, any]) -> str:
+        return self.localization.format_value(msg_id, kwargs)
 
 
-def translate_list_all(msg_id: str, args: Union[Dict[str, Any], None] = None) -> List[str]:
+def translate_list_all(msg_id: str, **kwargs: dict[str, any]) -> list[str]:
     """
     A method to get all translations for all locales at once as a list
     example:
     translate_list_all('cmd_start')
     ['start', 'старт', ...] # Outputs a list of all translations for the start command
     """
-    return split("\n+", _localization_all.format_value(msg_id, args))
+    return split("\n+", _localization_all.format_value(msg_id, kwargs))
