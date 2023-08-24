@@ -9,7 +9,7 @@ from src.bot.keyboards.callback_factories import (
     UserAgreementCallback,
     AboutCallback
 )
-from src.bot.structures.data_structure import BotItem, BotLanguage, BotBtnLanguageTitle, BotBtnTitle
+from src.bot.structures.bot import BotItem, BotLanguage, BotBtnLanguageTitle, BotBtnTitle
 from src.lexicon.translator import Translator
 
 

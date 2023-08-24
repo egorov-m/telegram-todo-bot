@@ -4,15 +4,20 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy.engine import Row
 
+from src.bot.structures.types import StatsType, VisualizeFormat
 from src.bot.states.data import SortingStateData
 from src.bot.keyboards.callback_factories import (
     BackCallback,
     AdminPanelUsersCallback,
     AdminPanelUserChangeAccessCallback,
     EmptyCallback,
-    AdminPanelUsersChangeSortDirectionCallback, AdminPanelUsersResetSearchCallback
+    AdminPanelUsersChangeSortDirectionCallback,
+    AdminPanelUsersResetSearchCallback,
+    AdminPanelStatsCallback,
+    AdminPanelStatsTypeCallback,
+    VisualizeCallback
 )
-from src.bot.structures.data_structure import BotBtnTitle, BotItem
+from src.bot.structures.bot import BotBtnTitle, BotItem
 from src.bot.utils.message_template import (
     enable_marker,
     get_text_sorting_button,
@@ -24,10 +29,12 @@ from src.lexicon import Translator
 async def create_admin_keyboard(translator: Translator) -> InlineKeyboardMarkup:
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
-    kb_builder.row(InlineKeyboardButton(text=await translator.translate(BotBtnTitle.BACK),
-                                        callback_data=BackCallback().pack()),
+    kb_builder.row(InlineKeyboardButton(text=await translator.translate(BotBtnTitle.ADMIN_PANEL_STATS),
+                                        callback_data=AdminPanelStatsCallback().pack()),
                    InlineKeyboardButton(text=await translator.translate(BotBtnTitle.ADMIN_PANEL_USERS),
-                                        callback_data=AdminPanelUsersCallback().pack()), width=2)
+                                        callback_data=AdminPanelUsersCallback().pack()),
+                   InlineKeyboardButton(text=await translator.translate(BotBtnTitle.BACK),
+                                        callback_data=BackCallback().pack()), width=2)
 
     return kb_builder.as_markup()
 
@@ -92,5 +99,28 @@ async def create_admin_users_keyboard(translator: Translator,
                                           callback_data=AdminPanelUserChangeAccessCallback(offset=offset,
                                                                                            user_id=user[2],
                                                                                            enabled=user[0]).pack()) for user in users], width=1)
+
+    return kb_builder.as_markup()
+
+
+async def create_admin_stat_keyboard(translator: Translator,
+                                     is_visualized: bool):
+    kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
+
+    kb_builder.row(InlineKeyboardButton(text=await translator.translate(BotBtnTitle.ADMIN_PANEL_STATS_CALLBACK_EVENT),
+                                        callback_data=AdminPanelStatsTypeCallback(stats_type=StatsType.CALLBACK_EVENT).pack()),
+                   InlineKeyboardButton(text=await translator.translate(BotBtnTitle.ADMIN_PANEL_STATS_STATE_EVENT),
+                                        callback_data=AdminPanelStatsTypeCallback(stats_type=StatsType.STATE_EVENT).pack()), width=2)
+
+    if is_visualized:
+        kb_builder.row(InlineKeyboardButton(text=await translator.translate(BotBtnTitle.IMAGE),
+                                            callback_data=VisualizeCallback(vis_format="jpg",
+                                                                            is_photo=True).pack()), width=1)
+        kb_builder.row(
+            *[InlineKeyboardButton(text=f"*.{vis_format.name}",
+                                   callback_data=VisualizeCallback(vis_format=vis_format).pack()) for vis_format in VisualizeFormat], width=3)
+
+    kb_builder.row(InlineKeyboardButton(text=await translator.translate(BotBtnTitle.BACK),
+                                        callback_data=BackCallback(where_from=BotItem.ADMIN_PANEL).pack()), width=1)
 
     return kb_builder.as_markup()

@@ -8,7 +8,7 @@ from aiogram.fsm.state import default_state
 from aiogram.types import CallbackQuery, Message
 
 from src.config import settings
-from src.bot.structures.data_structure import BotMessage, BotItem
+from src.bot.structures.bot import BotMessage, BotItem
 from src.db import Database
 from src.db.models import User
 from src.bot.keyboards.callback_factories import MainCallback, AcceptUserAgreementCallback, UpdateListCallback

@@ -1,25 +1,4 @@
 from enum import StrEnum
-from typing import Callable, TypedDict
-
-from aiogram import Dispatcher
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from src.db import Database
-from src.db.models import User
-from src.lexicon.translator import Translator
-
-
-class TransferData(TypedDict):
-    pool: Callable[[], AsyncSession]  # Function for creating a session
-    database: Database
-    dispatcher: Dispatcher
-    translator: Translator
-    active_user: User
-
-
-class LoggerType(StrEnum):
-    BOT_LOGGER = "bot_logger"
-    BOT_ERROR_LOGGER = "bot_error_logger"
 
 
 class BotCmd(StrEnum):
@@ -62,11 +41,15 @@ class BotItem(StrEnum):
     ADMIN_PANEL_USERS_RESET_SEARCH = "admin_panel_users_reset_search"
     ADMIN_PANEL_USERS_CHANGE_SORT_DIRECTION = "admin_panel_users_change_sort_direction"
     ADMIN_PANEL_USER_ACCESS = "admin_panel_user_access"
+    ADMIN_PANEL_STATS = "admin_panel_stats"
+    ADMIN_PANEL_STATS_EVENT = "admin_panel_stats_event"
 
     SETTINGS_LANGUAGES = "settings_languages"
     EMPTY = "empty"
     BACK = "back"
+    HIDE = "hide"
     CANCEL = "cancel"
+    VISUALIZE = "visualize"
     LANGUAGE = "language"
     ABOUT = "about"
 
@@ -106,12 +89,17 @@ class BotBtnTitle(StrEnum):
     CANCEL = "btn_cancel_title"
     LANGUAGES = "btn_languages_title"
     BACK = "btn_back_title"
+    HIDE = "btn_hide_title"
+    IMAGE = "btn_image_title"
     USER_AGREEMENT = "btn_user_agreement_title"
     ACCEPT_USER_AGREEMENT = "btn_accept_user_agreement_title"
 
     ADMIN_PANEL = "btn_admin_panel"
     ADMIN_PANEL_USERS = "btn_admin_panel_users"
     ADMIN_PANEL_USERS_RESET_SEARCH = "btn_admin_panel_users_reset_search"
+    ADMIN_PANEL_STATS = "btn_admin_panel_stats"
+    ADMIN_PANEL_STATS_CALLBACK_EVENT = "btn_admin_panel_stats_callback_event"
+    ADMIN_PANEL_STATS_STATE_EVENT = "btn_admin_panel_stats_state_event"
 
 
 class BotMessage(StrEnum):
@@ -156,6 +144,13 @@ class BotMessage(StrEnum):
     ADMIN_PANEL_USERS_MESSAGE_TITLE = "admin_panel_users_message_title"
     ADMIN_PANEL_USERS_MESSAGE_SUBTITLE = "admin_panel_users_message_subtitle"
     ADMIN_PANEL_USERS_MESSAGE_USER = "admin_panel_users_message_user"
+    ADMIN_PANEL_STATS_MESSAGE_TITLE = "admin_panel_stats_message_title"
+    ADMIN_PANEL_STATS_MESSAGE_SUBTITLE = "admin_panel_stats_message_subtitle"
+    ADMIN_PANEL_STATS_MESSAGE_OPTIONS = "admin_panel_stats_message_options"
+    ADMIN_PANEL_STATS_MESSAGE_SELECTION_ERROR = "admin_panel_stats_message_selection_error"
+    ADMIN_PANEL_STATS_MESSAGE_FORMATION_PROCESS = "admin_panel_stats_message_formation_process"
+    ADMIN_PANEL_STATS_MESSAGE_CALLBACK_EVENT = "admin_panel_stats_message_callback_event"
+    ADMIN_PANEL_STATS_MESSAGE_STATE_EVENT = "admin_panel_stats_message_state_event"
 
     ERROR_MESSAGE = "error_message"
     EXCEPTION_MESSAGE = "exception_message"

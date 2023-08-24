@@ -2,7 +2,7 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from src.bot.structures.data_structure import BotMessage
+from src.bot.structures.bot import BotMessage
 from src.bot.utils.message_template import bold_text, italic_text
 from src.lexicon.translator import Translator, translate_list_all
 

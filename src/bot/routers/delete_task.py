@@ -13,8 +13,8 @@ from src.bot.keyboards.task_kb import create_delete_task_keyboard
 from src.bot.routers.utils import edit_message
 from src.bot.routers.start import btn_start
 from src.bot.states.data import DeletableTask
-from src.bot.states.state import DeleteTaskStates
-from src.bot.structures.data_structure import BotMessage
+from src.bot.states.groups import DeleteTaskStates
+from src.bot.structures.bot import BotMessage
 from src.bot.utils.message_template import bold_text, italic_text
 from src.db import Database
 from src.db.models import User, Task

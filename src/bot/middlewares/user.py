@@ -5,8 +5,10 @@ import logging as log
 from aiogram import BaseMiddleware
 from aiogram.types import Message, CallbackQuery
 
+from src.bot.structures.bot import BotItem
+from src.bot.structures.types import LoggerType
 from src.bot.routers.start import user_agreement_conclusion, user_lockout_message
-from src.bot.structures.data_structure import TransferData, LoggerType, BotItem
+from src.bot.structures.data import TransferData
 from src.db import Database
 from src.db.models import User
 from src.db.repository import UserRepository

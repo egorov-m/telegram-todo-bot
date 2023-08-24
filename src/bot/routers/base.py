@@ -6,6 +6,7 @@ from aiogram.filters.callback_data import CallbackQuery
 from aiogram.fsm.state import State, default_state
 from aiogram.types import ErrorEvent
 
+from src.bot.structures.types import LoggerType
 from src.bot.routers.admin import btn_admin_panel
 from src.bot.routers.edit_task import btn_edit_task
 from src.db import Database
@@ -14,9 +15,9 @@ from src.bot.routers.add_task import btn_add_task, input_title_add_task_for_str
 from src.bot.routers.settings import btn_settings
 from src.bot.routers.start import btn_start
 from src.bot.states.data import AddTaskStateData
-from src.bot.states.state import AddTaskStates
-from src.bot.structures.data_structure import BotItem, BotMessage, LoggerType
-from src.bot.keyboards.callback_factories import BackCallback, CancelCallback, EmptyCallback
+from src.bot.states.groups import AddTaskStates
+from src.bot.structures.bot import BotItem, BotMessage
+from src.bot.keyboards.callback_factories import BackCallback, CancelCallback, EmptyCallback, HideCallback
 from src.lexicon.translator import Translator
 
 
@@ -69,6 +70,7 @@ async def btn_back(callback: CallbackQuery,
                                 active_user=active_user,
                                 translator=translator)
         case BotItem.ADMIN_PANEL:
+            await state.clear()
             await btn_admin_panel(callback,
                                   state,
                                   database=database,
@@ -89,7 +91,6 @@ async def btn_cancel(callback: CallbackQuery,
                      database: Database,
                      active_user: User,
                      translator: Translator):
-    await state.clear()
     await state.set_state(default_state)
     await btn_start(callback,
                     state,
@@ -98,12 +99,17 @@ async def btn_cancel(callback: CallbackQuery,
                     translator=translator)
 
 
+@base_router.callback_query(HideCallback.filter())
+async def btn_hide(callback: CallbackQuery):
+    await callback.message.delete()
+
+
 @base_router.callback_query(EmptyCallback.filter())
 async def empty(callback: CallbackQuery):
     await callback.answer()
 
 
-@base_router.errors()
+# @base_router.errors()
 async def errors_bot_handler(event: ErrorEvent,
                              *,
                              translator: Translator):

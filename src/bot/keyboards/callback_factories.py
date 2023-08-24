@@ -1,7 +1,8 @@
 from uuid import UUID
 
+from src.bot.structures.types import StatsType, VisualizeFormat
 from src.bot.states.data import SortDirectionKey
-from src.bot.structures.data_structure import BotItem
+from src.bot.structures.bot import BotItem
 
 from aiogram.filters.callback_data import CallbackData
 
@@ -88,6 +89,14 @@ class AdminPanelCallback(CallbackData, prefix=BotItem.ADMIN_PANEL):
     pass
 
 
+class AdminPanelStatsCallback(CallbackData, prefix=BotItem.ADMIN_PANEL_STATS):
+    pass
+
+
+class AdminPanelStatsTypeCallback(CallbackData, prefix=BotItem.ADMIN_PANEL_STATS_EVENT):
+    stats_type: StatsType
+
+
 class AdminPanelUsersCallback(CallbackData, prefix=BotItem.ADMIN_PANEL_USERS):
     offset: int = 0
 
@@ -110,8 +119,17 @@ class BackCallback(CallbackData, prefix=BotItem.BACK):
     where_from: str = BotItem.MAIN
 
 
+class HideCallback(CallbackData, prefix=BotItem.HIDE):
+    pass
+
+
 class CancelCallback(CallbackData, prefix=BotItem.CANCEL):
     pass
+
+
+class VisualizeCallback(CallbackData, prefix=BotItem.VISUALIZE):
+    vis_format: VisualizeFormat
+    is_photo: bool = False
 
 
 class LanguagesCallback(CallbackData, prefix=BotItem.SETTINGS_LANGUAGES):

@@ -4,10 +4,10 @@ from aiogram import BaseMiddleware
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from src.bot.structures.event import EventType
+from src.bot.structures.data import TransferData
+from src.bot.structures.types import BotEventType
 from src.db import Database
 from src.db.repository import EventRepository
-from src.bot.structures.data_structure import TransferData
 from src.db.models import User
 
 
@@ -32,10 +32,10 @@ class StatMiddleware(BaseMiddleware):
         state = await fsm_context.get_state()
 
         if isinstance(event, CallbackQuery):
-            event_type: EventType = EventType.CALLBACK_QUERY
+            event_type: BotEventType = BotEventType.CALLBACK_QUERY
             callback_data_prefix = event.data.split(':')[0]
         elif isinstance(event, Message):
-            event_type: EventType = EventType.MESSAGE
+            event_type: BotEventType = BotEventType.MESSAGE
 
         await repo.create_event(active_user,
                                 event_type=event_type,

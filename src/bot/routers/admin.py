@@ -1,20 +1,25 @@
+from datetime import datetime
 from math import ceil
 
 from aiogram import Router
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery, Message, ReplyKeyboardMarkup
 from sqlalchemy.engine import Row
 
-from src.bot.states.state import AdminPanelStates
+from src.bot.structures.types import StatsType, VisualizeFormat
+from src.db.models import Event
+from src.db.repository import EventRepository
+from src.bot.keyboards.main_kb import create_hide_keyboard
+from src.bot.states.groups import AdminPanelStates
 from src.config import settings
-from src.bot.states.data import SortingStateData, SortDirectionKey
+from src.bot.states.data import SortingStateData, SortDirectionKey, StatsStateData, VisProcessData
 from src.db.repository import UserRepository
-from src.bot.keyboards.admin_kb import create_admin_keyboard, create_admin_users_keyboard
+from src.bot.keyboards.admin_kb import create_admin_keyboard, create_admin_users_keyboard, create_admin_stat_keyboard
 from src.bot.routers.utils import edit_message, get_expression_sorting
-from src.bot.structures.data_structure import BotMessage
-from src.bot.utils.message_template import bold_text, italic_text
+from src.bot.structures.bot import BotMessage
+from src.bot.utils.message_template import bold_text, italic_text, get_selected_stats_markers, task_marker
 from src.db.repository import TaskRepository
 from src.db import Database
 from src.db.models import User
@@ -24,8 +29,11 @@ from src.bot.keyboards.callback_factories import (
     AdminPanelUsersCallback,
     AdminPanelUserChangeAccessCallback,
     AdminPanelUsersChangeSortDirectionCallback,
-    AdminPanelUsersResetSearchCallback
+    AdminPanelUsersResetSearchCallback,
+    AdminPanelStatsCallback,
+    AdminPanelStatsTypeCallback, VisualizeCallback
 )
+from src.visualizer.base import visualize_timeline
 
 admin_panel_router = Router(name="admin_panel_router")
 
@@ -61,6 +69,163 @@ async def btn_admin_panel(callback: CallbackQuery,
                        translator=translator,
                        text=msg,
                        kb=kb)
+
+
+@admin_panel_router.callback_query(
+    AdminPanelStatsCallback.filter(),
+    StateFilter(AdminPanelStates.open_admin_panel,
+                AdminPanelStates.open_stats_panel)
+)
+async def btn_admin_panel_stats(callback: CallbackQuery,
+                                state: FSMContext,
+                                *,
+                                database: Database,
+                                active_user: User,
+                                translator: Translator):
+    data: StatsStateData = await state.get_data()
+    if not data:
+        await state.set_state(AdminPanelStates.open_stats_panel)
+        data = StatsStateData(in_process=[], selected_stats=[StatsType.CALLBACK_EVENT, StatsType.STATE_EVENT])
+        await state.update_data(data)
+    await get_admin_panel_stats(callback.message,
+                                state,
+                                data=data,
+                                database=database,
+                                active_user=active_user,
+                                translator=translator)
+
+
+async def get_admin_panel_stats(message: Message,
+                                state: FSMContext,
+                                *,
+                                data: StatsStateData,
+                                database: Database,
+                                active_user: User,
+                                translator: Translator):
+    markers = get_selected_stats_markers(data["selected_stats"])
+    msg: str = f"{bold_text(await translator.translate(BotMessage.ADMIN_PANEL_STATS_MESSAGE_TITLE))}\n" \
+               f"{italic_text(await translator.translate(BotMessage.ADMIN_PANEL_STATS_MESSAGE_SUBTITLE))}\n\n" \
+               f"{bold_text(await translator.translate(BotMessage.ADMIN_PANEL_STATS_MESSAGE_OPTIONS))}:\n" \
+               f"- {markers[StatsType.CALLBACK_EVENT]} {italic_text(await translator.translate(BotMessage.ADMIN_PANEL_STATS_MESSAGE_CALLBACK_EVENT))}\n" \
+               f"- {markers[StatsType.STATE_EVENT]} {italic_text(await translator.translate(BotMessage.ADMIN_PANEL_STATS_MESSAGE_STATE_EVENT))}"
+    is_visualized: bool = len(data["selected_stats"]) > 0
+    if not is_visualized:
+        msg += f"\n\n{italic_text(await translator.translate(BotMessage.ADMIN_PANEL_STATS_MESSAGE_SELECTION_ERROR))}"
+    in_process: list[VisProcessData] = data["in_process"]
+    if len(in_process) > 0:
+        msg += f"\n\n{bold_text(await translator.translate(BotMessage.ADMIN_PANEL_STATS_MESSAGE_FORMATION_PROCESS))}:\n"
+        for item in in_process:
+            msg += f"- {task_marker()} {bold_text(item['visualize_format'].upper())} - {' | '.join(item['selected_stats'])}\n"
+
+    kb = await create_admin_stat_keyboard(translator=translator, is_visualized=is_visualized)
+
+    await edit_message(message,
+                       state,
+                       database=database,
+                       active_user=active_user,
+                       translator=translator,
+                       text=msg,
+                       kb=kb)
+
+
+@admin_panel_router.callback_query(VisualizeCallback.filter(), AdminPanelStates.open_stats_panel)
+async def btn_admin_panel_stats_visualize(callback: CallbackQuery,
+                                          state: FSMContext,
+                                          *,
+                                          database: Database,
+                                          active_user: User,
+                                          translator: Translator):
+    vis_format: VisualizeFormat = callback.data.split(":")[1]
+    is_photo: bool = callback.data.split(":")[2] == "True"
+    data: StatsStateData = await state.get_data()
+    in_process: list[VisProcessData] = data["in_process"]
+    selected_stats: list[StatsType] = data["selected_stats"]
+    new_process = VisProcessData(selected_stats=selected_stats, visualize_format=vis_format)
+    in_process.append(new_process)
+    data["in_process"] = in_process
+    await state.update_data(data)
+    await get_admin_panel_stats(callback.message,
+                                state,
+                                data=data,
+                                database=database,
+                                active_user=active_user,
+                                translator=translator)
+
+    kb = await create_hide_keyboard(translator=translator)
+    repo: EventRepository = database.event
+    for stat in selected_stats:
+        match stat:
+            case StatsType.CALLBACK_EVENT.value:
+                await answer_media(callback.message, repo, Event.callback_data_prefix, active_user,
+                                   title=await translator.translate(
+                                       BotMessage.ADMIN_PANEL_STATS_MESSAGE_CALLBACK_EVENT),
+                                   vis_format=vis_format,
+                                   is_photo=is_photo,
+                                   kb=kb)
+            case StatsType.STATE_EVENT.value:
+                await answer_media(callback.message, repo, Event.state, active_user,
+                                   title=await translator.translate(
+                                       BotMessage.ADMIN_PANEL_STATS_MESSAGE_STATE_EVENT),
+                                   vis_format=vis_format,
+                                   is_photo=is_photo,
+                                   kb=kb)
+
+    in_process: list[VisProcessData] = data["in_process"]
+    in_process.remove(new_process)
+    data["in_process"] = in_process
+    await state.update_data(data)
+    await get_admin_panel_stats(callback.message,
+                                state,
+                                data=data,
+                                database=database,
+                                active_user=active_user,
+                                translator=translator)
+
+
+async def answer_media(message: Message,
+                       repo: EventRepository,
+                       grouping_field,
+                       active_user: User,
+                       *,
+                       title: str,
+                       vis_format: str,
+                       is_photo: bool,
+                       kb: ReplyKeyboardMarkup):
+    datetime_format: str = "%Y-%m-%d %H:%M:%S"
+    title = f"{title} - {datetime.utcnow().strftime(datetime_format)}"
+    data_callback = await repo.get_events_for_timeline(active_user, grouping_field=grouping_field)
+    media_callback = visualize_timeline(data_callback,
+                                        title=title,
+                                        filename_no_ext=title.lower().replace(" ", "_"),
+                                        visualize_format=vis_format)
+    if is_photo:
+        await message.answer_photo(media_callback, caption=title, reply_markup=kb)
+    else:
+        await message.answer_document(media_callback, caption=title, reply_markup=kb)
+
+
+@admin_panel_router.callback_query(AdminPanelStatsTypeCallback.filter(), AdminPanelStates.open_stats_panel)
+async def btn_admin_panel_stats_type(callback: CallbackQuery,
+                                     state: FSMContext,
+                                     *,
+                                     database: Database,
+                                     active_user: User,
+                                     translator: Translator):
+    stats_type: StatsType = callback.data.split(":")[1]
+    data: StatsStateData = await state.get_data()
+    selected_stats = data["selected_stats"]
+    if stats_type in selected_stats:
+        selected_stats.remove(stats_type)
+    else:
+        selected_stats.append(stats_type)
+    data["selected_stats"] = selected_stats
+    await state.update_data(data)
+    await get_admin_panel_stats(callback.message,
+                                state,
+                                data=data,
+                                database=database,
+                                active_user=active_user,
+                                translator=translator)
 
 
 @admin_panel_router.callback_query(AdminPanelUsersChangeSortDirectionCallback.filter(), AdminPanelStates.open_users_panel)

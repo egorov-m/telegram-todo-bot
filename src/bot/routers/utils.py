@@ -1,6 +1,9 @@
+import time
+from typing import Optional
+
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
-from aiogram.types import InlineKeyboardMarkup, Message
+from aiogram.types import InlineKeyboardMarkup, Message, InputMedia
 from sqlalchemy import asc, desc, func
 from sqlalchemy.sql.elements import UnaryExpression
 

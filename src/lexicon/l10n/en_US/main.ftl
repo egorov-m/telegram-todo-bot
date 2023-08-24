@@ -28,12 +28,17 @@ btn_about_title = About ℹ️
 btn_admin_panel = Admin panel 🔑
 btn_admin_panel_users = Users 👤
 btn_admin_panel_users_reset_search = Reset search 🔎 ({ $text })
+btn_admin_panel_stats = Stats 📊
+btn_admin_panel_stats_callback_event = Callback event 🎆
+btn_admin_panel_stats_state_event = State event 🎇
 
 btn_save_title = Save ✅
 btn_apply_title = Apply ☑️
 btn_cancel_title = Cancel ◀️
-btn_back_title = Back ◀️
+btn_back_title = Back ↩️
 btn_skip_title = Skip ⤵️
+btn_hide_title = Hide ❎
+btn_image_title = Image 🖼
 
 btn_languages_title = Languages 🌐
 btn_language_en_US_title = English 🇺🇸
@@ -97,6 +102,13 @@ admin_panel_users_message_title = Users 👤
 admin_panel_users_message_subtitle = Press the buttons to adjust user access.
                                      Send text messages to perform searches on user data.
 admin_panel_users_message_user = access | username | id | first_name | last_name | tasks | done
+admin_panel_stats_message_title = Stats 📊
+admin_panel_stats_message_subtitle = Choose which stats to output, click on the buttons to output in the appropriate format
+admin_panel_stats_message_options = Options
+admin_panel_stats_message_selection_error = You have not selected any option for displaying stats
+admin_panel_stats_message_formation_process = In the process of forming
+admin_panel_stats_message_callback_event = Callback event
+admin_panel_stats_message_state_event = State event
 
 user_agreement_accepted_message = User agreement accepted ✅
                                   Date: { $date }

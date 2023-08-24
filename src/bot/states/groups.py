@@ -27,6 +27,7 @@ class EditTaskStates(StatesGroup):
 class AdminPanelStates(StatesGroup):
     open_admin_panel = State()
     open_users_panel = State()
+    open_stats_panel = State()
 
 
 class BotStates(StatesGroup):

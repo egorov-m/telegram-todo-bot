@@ -17,6 +17,9 @@ redis = "^4.5.4"
 fluent-runtime = "^0.4.0"
 sqlmodel = "^0.0.8"
 asyncpg = "^0.27.0"
+pandas = "^2.0.3"
+plotly = "^5.16.1"
+kaleido = "0.1.0.post1"
 
 
 [tool.poetry.group.dev.dependencies]

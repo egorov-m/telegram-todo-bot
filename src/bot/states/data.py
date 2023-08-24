@@ -3,6 +3,8 @@ from typing import TypedDict
 
 from aiogram.types import Message
 
+from src.bot.structures.types import StatsType, VisualizeFormat
+
 
 class AddTaskStateData(StrEnum):
     TASK_TITLE = "task_title"
@@ -42,3 +44,13 @@ class SortingStateData(TypedDict):
     message: str
     offset: int
     list_hash: str
+
+
+class VisProcessData(TypedDict):
+    selected_stats: list[StatsType]
+    visualize_format: VisualizeFormat
+
+
+class StatsStateData(TypedDict):
+    in_process: list[VisProcessData]
+    selected_stats: list[StatsType]

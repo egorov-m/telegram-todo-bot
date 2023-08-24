@@ -1,12 +1,13 @@
 from typing import Optional
 
 from sqlalchemy import desc
-from sqlalchemy.engine import Result
+from sqlalchemy.engine import Result, Row
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.elements import UnaryExpression
+from sqlalchemy.sql.functions import func
 from sqlmodel import select
 
-from src.bot.structures.event import EventType
+from src.bot.structures.types import BotEventType
 from src.exceptions import ToDoBotError, ToDoBotErrorCode
 from src.db.models import User, Event
 from src.bot.structures.role import Role
@@ -37,11 +38,23 @@ class EventRepository:
         )
         return result.scalars().all()
 
+    @manage_data_protection_method(Role.ADMINISTRATOR)
+    async def get_events_for_timeline(self,
+                                      active_user: User,
+                                      *,
+                                      grouping_field=Event.callback_data_prefix) -> list[Row]:
+        date = func.date_trunc("hour", Event.occurrence_date).label("occurrence_date")
+        result: Result = await self.session.execute(
+            select(date, grouping_field, func.count(Event.id))
+            .where(grouping_field.isnot(None)).group_by(Event.occurrence_date, grouping_field)
+        )
+        return result.all()
+
     @menage_db_method(CommitMode.FLUSH)
     async def create_event(self,
                            active_user: User,
                            *,
-                           event_type: EventType,
+                           event_type: BotEventType,
                            callback_data_prefix: Optional[str] = None,
                            state: Optional[str] = None):
         new_event: Event = Event(type=event_type,

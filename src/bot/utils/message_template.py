@@ -2,6 +2,7 @@
 
 from typing import List, Optional
 
+from src.bot.structures.types import StatsType
 from src.bot.states.data import SortingStateData, SortDirectionKey
 from src.db.models.task import Task
 
@@ -55,6 +56,19 @@ def get_markers_for_sorting_direction_key() -> dict:
         SortDirectionKey.TASKS: "📌",
         SortDirectionKey.DONE: "✅"
     }
+
+
+def get_selected_stats_markers(selected_stats: list[StatsType]) -> list[dict[StatsType, str]]:
+    markers: dict = {StatsType.STATE_EVENT: "✖️",
+                     StatsType.CALLBACK_EVENT: "✖️"}
+    for item in selected_stats:
+        markers[item] = "✔️"
+
+    return markers
+
+
+def task_marker():
+    return "🛠"
 
 
 def deletion_marker(is_delete: bool):

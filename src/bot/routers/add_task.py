@@ -15,8 +15,8 @@ from src.bot.routers.start import btn_start
 from src.bot.states.data import AddTaskStateData
 from src.bot.utils.message_template import bold_text, italic_text
 from src.bot.keyboards.callback_factories import AddTaskCallback, AddTaskSaveCallback
-from src.bot.structures.data_structure import BotMessage, BotItem
-from src.bot.states.state import AddTaskStates
+from src.bot.structures.bot import BotMessage, BotItem
+from src.bot.states.groups import AddTaskStates
 from src.lexicon.translator import Translator
 
 

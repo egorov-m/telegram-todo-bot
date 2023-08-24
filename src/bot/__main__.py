@@ -8,13 +8,14 @@ from aiogram.fsm.state import default_state
 from aiogram.fsm.storage.redis import RedisStorage
 from redis.asyncio import Redis
 
+from src.bot.structures.types import LoggerType
 from src.bot.menu.menu import set_main_menu
 from src.db.database import create_async_engine, get_session_maker
 from src.config import settings
 from src.logconfig import setup_logging
 from src.lexicon.translator import Translator
 from src.lexicon.translator import load_localizations
-from src.bot.structures.data_structure import TransferData, LoggerType
+from src.bot.structures.data import TransferData
 from src.bot.dispatcher import get_dispatcher
 
 logger = log.getLogger(LoggerType.BOT_LOGGER)

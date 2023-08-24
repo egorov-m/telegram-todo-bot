@@ -1,7 +1,7 @@
 from aiogram import Bot
 from aiogram.types import BotCommand
 
-from src.bot.structures.data_structure import BotCmd
+from src.bot.structures.bot import BotCmd
 from src.lexicon import Translator
 
 
