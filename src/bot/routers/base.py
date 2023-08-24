@@ -49,9 +49,9 @@ async def btn_back(callback: CallbackQuery,
                                        active_user=active_user,
                                        translator=translator)
                 case AddTaskStates.add_task_waiting_confirmation:
-                    state_data = await state.get_data()
+                    state_data: AddTaskStateData = await state.get_data()
                     # an alternative version of the handler is used, receiving the message as a string
-                    await input_title_add_task_for_str(state_data.get(AddTaskStateData.TASK_TITLE),
+                    await input_title_add_task_for_str(state_data["task_title"],
                                                        state,
                                                        database=database,
                                                        active_user=active_user,
@@ -109,7 +109,7 @@ async def empty(callback: CallbackQuery):
     await callback.answer()
 
 
-# @base_router.errors()
+@base_router.errors()
 async def errors_bot_handler(event: ErrorEvent,
                              *,
                              translator: Translator):

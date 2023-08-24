@@ -49,13 +49,13 @@ async def btn_add_task(callback: CallbackQuery,
                            kb=kb)
         return
 
-    await state.set_state(state=AddTaskStates.add_task_waiting_title_input)
-    data = await state.get_data()
+    await state.set_state(AddTaskStates.add_task_waiting_title_input)
+    data = AddTaskStateData(task_title="", task_description="", add_task_message=callback.message.json())
     msg: str = await _get_add_task_full_msg(AddTaskStates.add_task_waiting_title_input,
                                             translator=translator,
                                             data=data)
     message: Message = callback.message
-    await state.update_data({AddTaskStateData.ADD_TASK_MESSAGE: message.json()})
+    await state.update_data(data)
     await edit_message(message,
                        state,
                        database=database,
@@ -71,10 +71,10 @@ async def btn_add_save_new_task(callback: CallbackQuery,
                                 translator: Translator,
                                 database: Database,
                                 active_user: User):
-    data = await state.get_data()
+    data: AddTaskStateData = await state.get_data()
     repo: TaskRepository = database.task
-    await repo.create_task(title=data[AddTaskStateData.TASK_TITLE],
-                           description=data[AddTaskStateData.TASK_DESCRIPTION],
+    await repo.create_task(title=data["task_title"],
+                           description=data["task_description"],
                            creator_telegram_user_id=active_user.telegram_user_id)
 
     await btn_start(callback, state,
@@ -100,12 +100,12 @@ async def _get_add_task_msg(translator: Translator,
 async def _get_add_task_full_msg(next_state: State,
                                  *,
                                  translator: Translator,
-                                 data: dict[str, any],
+                                 data: AddTaskStateData,
                                  input_error: bool = False):
     subtitle: str = await _get_add_task_subtitle(next_state,
                                                  translator=translator)
-    task_title = data.get(AddTaskStateData.TASK_TITLE)
-    task_description = data.get(AddTaskStateData.TASK_DESCRIPTION)
+    task_title = data["task_title"]
+    task_description = data["task_description"]
     msg: str = await _get_add_task_msg(translator,
                                        subtitle,
                                        input_error,
@@ -160,16 +160,21 @@ async def input_title_add_task_for_str(text_message: str,
                                        active_user: User,
                                        translator: Translator):
     if _is_no_valid_input(text_message):
-        await _invalid_input(state, translator, database, active_user)
+        await _invalid_input(state,
+                             database=database,
+                             active_user=active_user,
+                             translator=translator)
     else:
-        await state.update_data({AddTaskStateData.TASK_TITLE: text_message})
-        data = await state.get_data()
-        add_task_message: Message = Message.parse_raw(data[AddTaskStateData.ADD_TASK_MESSAGE])
+        data: AddTaskStateData = await state.get_data()
+        data["task_title"] = text_message
+        await state.update_data(data)
+
+        add_task_message: Message = Message.parse_raw(data["add_task_message"])
 
         msg: str = await _get_add_task_full_msg(AddTaskStates.add_task_waiting_description_input,
                                                 translator=translator,
                                                 data=data)
-        kb = await create_add_task_keyboard(translator=translator, where_from=BotItem.ADD_TASK)
+        kb = await create_add_task_keyboard(translator=translator, task_data=data, where_from=BotItem.ADD_TASK)
         await state.set_state(AddTaskStates.add_task_waiting_description_input)
         await edit_message(add_task_message,
                            state,
@@ -204,11 +209,16 @@ async def input_description_aad_task_for_str(text_message: str,
                                              active_user: User,
                                              translator: Translator):
     if _is_no_valid_input(text_message):
-        await _invalid_input(state, translator)
+        await _invalid_input(state,
+                             database=database,
+                             active_user=active_user,
+                             translator=translator)
     else:
-        await state.update_data({AddTaskStateData.TASK_DESCRIPTION: text_message})
-        data = await state.get_data()
-        add_task_message: Message = Message.parse_raw(data[AddTaskStateData.ADD_TASK_MESSAGE])
+        data: AddTaskStateData = await state.get_data()
+        data["task_description"] = text_message
+        await state.update_data(data)
+
+        add_task_message: Message = Message.parse_raw(data["add_task_message"])
 
         msg: str = await _get_add_task_full_msg(AddTaskStates.add_task_waiting_confirmation,
                                                 translator=translator,
@@ -235,13 +245,13 @@ async def _invalid_input(state: FSMContext,
     """
     Editing the message in case of incorrect data entry by the user
     """
-    data = await state.get_data()
-    add_task_message: Message = Message.parse_raw([AddTaskStateData.ADD_TASK_MESSAGE])
+    data: AddTaskStateData = await state.get_data()
+    add_task_message: Message = Message.parse_raw(data["add_task_message"])
     st = await state.get_state()
-    msg: str = _get_add_task_full_msg(st,
-                                      translator=translator,
-                                      data=data,
-                                      input_error=True)
+    msg: str = await _get_add_task_full_msg(st,
+                                            translator=translator,
+                                            data=data,
+                                            input_error=True)
     kb = await create_back_keyboard(translator=translator)
     await edit_message(add_task_message,
                        state,

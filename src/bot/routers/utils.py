@@ -45,8 +45,7 @@ def _is_no_valid_input(text: str | None):
     return (text is None or
             text.isspace() or
             text == '' or
-            text.__contains__("\"") or
-            text.__contains__("\'"))
+            text.__contains__("\""))
 
 
 def get_expression_sorting(data: SortingStateData) -> UnaryExpression:
