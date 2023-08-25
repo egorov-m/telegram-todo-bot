@@ -25,18 +25,16 @@ from src.lexicon import Translator
 
 
 async def create_add_task_keyboard(translator: Translator,
-                                   task_data=None,
+                                   task_data: AddTaskStateData,
                                    where_from: BotItem = BotItem.MAIN, isSave: bool = False) -> InlineKeyboardMarkup:
-    if task_data is None:
-        task_data = {}
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
     buttons: [InlineKeyboardButton] = [InlineKeyboardButton(text=await translator.translate(BotBtnTitle.CANCEL),
                                                             callback_data=CancelCallback().pack())]
     if isSave and task_data is not None:
         buttons.append(InlineKeyboardButton(text=await translator.translate(BotBtnTitle.SAVE),
                                             callback_data=AddTaskSaveCallback(
-                                                task_title=task_data.get(AddTaskStateData.TASK_TITLE),
-                                                task_description=task_data.get(AddTaskStateData.TASK_DESCRIPTION))
+                                                task_title=task_data["task_title"],
+                                                task_description=task_data["task_description"])
                                             .pack()))
     buttons.append(InlineKeyboardButton(text=await translator.translate(BotBtnTitle.BACK),
                                         callback_data=BackCallback(where_from=where_from).pack()))

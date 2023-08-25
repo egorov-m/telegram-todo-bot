@@ -6,10 +6,10 @@ from aiogram.types import Message
 from src.bot.structures.types import StatsType, VisualizeFormat
 
 
-class AddTaskStateData(StrEnum):
-    TASK_TITLE = "task_title"
-    TASK_DESCRIPTION = "task_description"
-    ADD_TASK_MESSAGE = "add_task_message"
+class AddTaskStateData(TypedDict):
+    task_title: str
+    task_description: str
+    add_task_message: Message
 
 
 class DoneTask(TypedDict):
