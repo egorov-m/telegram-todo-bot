@@ -2,15 +2,27 @@
   <a href="https://github.com/egorov-m/telegram-todo-bot" target="blank"><img src="./assets/logo.jpg" width="150" alt="ToDo" /></a>
 </p>
 <h1 align="center">Telegram ToDo bot</h1>
-<p align="center">Учебный проект, telegram бот для работы со списками задач.</p>
+<p align="center">Учебный проект, telegram бот для работы со списком задач.</p>
 
 <p align="center">
-    <img src="https://img.shields.io/badge/Python-000?style=for-the-badge&logo=python&logoColor=white" alt="Python">
-    <img src="https://img.shields.io/badge/Aiogram-000?style=for-the-badge&logo=aiogram&logoColor=white" alt="Aiogram">
-    <img src="https://img.shields.io/badge/Postgres-000?style=for-the-badge&logo=postgresql&logoColor=white" alt="Postgres">
-    <img src="https://img.shields.io/badge/SQLAlchemy-000?style=for-the-badge&logo=sqlalchemy&logoColor=white" alt="SQLAlchemy">
-    <img src="https://img.shields.io/badge/Redis-000?style=for-the-badge&logo=redis&logoColor=white" alt="Redis">
-    <img src="https://img.shields.io/badge/Plotly-000?style=for-the-badge&logo=plotly&logoColor=white" alt="Redis">
+    <a href="https://www.python.org/" target="blank">
+        <img src="https://img.shields.io/badge/Python-000?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+    </a>
+    <a href="https://github.com/aiogram/aiogram" target="blank">
+        <img src="https://img.shields.io/badge/Aiogram-000?style=for-the-badge&logo=aiogram&logoColor=white" alt="Aiogram">
+    </a>
+    <a href="https://www.postgresql.org/" target="blank">
+        <img src="https://img.shields.io/badge/Postgres-000?style=for-the-badge&logo=postgresql&logoColor=white" alt="Postgres">
+    </a>
+    <a href="https://www.sqlalchemy.org/" target="blank">
+        <img src="https://img.shields.io/badge/SQLAlchemy-000?style=for-the-badge&logo=sqlalchemy&logoColor=white" alt="SQLAlchemy">
+    </a>
+    <a href="https://redis.io/" target="blank">
+        <img src="https://img.shields.io/badge/Redis-000?style=for-the-badge&logo=redis&logoColor=white" alt="Redis">
+    </a>
+    <a href="https://plotly.com/python/" target="blank">
+        <img src="https://img.shields.io/badge/Plotly-000?style=for-the-badge&logo=plotly&logoColor=white" alt="Redis">
+    </a>
 </p>
 
 ## Реализовано
